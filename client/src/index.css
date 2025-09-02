@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(210, 40%, 96%);
+  --foreground: hsl(215, 25%, 27%);
+  --card: hsl(210, 40%, 98%);
+  --card-foreground: hsl(215, 25%, 27%);
+  --popover: hsl(210, 40%, 98%);
+  --popover-foreground: hsl(215, 25%, 27%);
+  --primary: hsl(200, 90%, 45%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(180, 35%, 75%);
+  --secondary-foreground: hsl(215, 25%, 27%);
+  --muted: hsl(210, 40%, 92%);
+  --muted-foreground: hsl(215, 20%, 55%);
+  --accent: hsl(35, 85%, 85%);
+  --accent-foreground: hsl(215, 25%, 27%);
+  --destructive: hsl(0, 65%, 58%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --border: hsl(210, 40%, 88%);
+  --input: hsl(210, 40%, 96%);
+  --ring: hsl(200, 90%, 45%);
+  --radius: 12px;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+.dark {
+  --background: hsl(210, 40%, 8%);
+  --foreground: hsl(210, 40%, 92%);
+  --card: hsl(210, 40%, 10%);
+  --card-foreground: hsl(210, 40%, 92%);
+  --popover: hsl(210, 40%, 10%);
+  --popover-foreground: hsl(210, 40%, 92%);
+  --primary: hsl(200, 90%, 55%);
+  --primary-foreground: hsl(210, 40%, 8%);
+  --secondary: hsl(180, 35%, 25%);
+  --secondary-foreground: hsl(210, 40%, 92%);
+  --muted: hsl(210, 40%, 15%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --accent: hsl(35, 85%, 25%);
+  --accent-foreground: hsl(210, 40%, 92%);
+  --destructive: hsl(0, 65%, 58%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --border: hsl(210, 40%, 20%);
+  --input: hsl(210, 40%, 15%);
+  --ring: hsl(200, 90%, 55%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    background: linear-gradient(135deg, var(--background) 0%, hsl(210, 40%, 94%) 100%);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .wave-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e1f5fe' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .crab-emergence {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .journal-card {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .dark .journal-card {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  @keyframes gentle-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .float-animation {
+    animation: gentle-float 3s ease-in-out infinite;
+  }
+
+  @keyframes wave-motion {
+    0%, 100% { transform: translateX(0px) rotate(0deg); }
+    25% { transform: translateX(5px) rotate(1deg); }
+    75% { transform: translateX(-5px) rotate(-1deg); }
+  }
+
+  .wave-motion {
+    animation: wave-motion 4s ease-in-out infinite;
+  }
+
+  @keyframes confetti-fall {
+    to {
+      transform: translateY(100vh) rotate(360deg);
+    }
+  }
+
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    animation: confetti-fall 3s linear infinite;
+    pointer-events: none;
+    z-index: 1000;
+  }
+}

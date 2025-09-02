@@ -173,6 +173,15 @@ export default function LandingPage() {
                   >
                     📍 Continue Your Journey
                   </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/")}
+                    size="lg"
+                    className="px-8 py-4 text-lg font-semibold"
+                    data-testid="button-go-back-main"
+                  >
+                    🏠 Go back to main page
+                  </Button>
                 </div>
               )}
             </CardContent>

@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { generateEncouragement, generateJournalEncouragement } from "./services/openai";
 import { 
   insertUserSchema, 
   insertUserReflectionSchema, 
@@ -85,19 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Suggestion not found" });
       }
 
-      // Generate AI encouragement
-      const aiResponse = await generateEncouragement(
-        reflectionData.reflection,
-        suggestion.description
-      );
-
-      // Update reflection with AI response
-      const updatedReflection = await storage.updateUserReflection(reflection.id, {
-        aiResponse: aiResponse.message,
-        sentiment: aiResponse.sentiment
-      });
-
-      res.json(updatedReflection);
+      res.json(reflection);
     } catch (error) {
       console.error('Error creating reflection:', error);
       res.status(500).json({ error: "Failed to create reflection" });
@@ -167,14 +154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const entryData = insertJournalEntrySchema.parse(req.body);
       const entry = await storage.createJournalEntry(entryData);
       
-      // Generate AI encouragement for journal entry
-      if (entryData.content && entryData.mood) {
-        const encouragement = await generateJournalEncouragement(entryData.content, entryData.mood);
-        // For now, we'll just return the entry. In a real app, you might want to store the AI response
-        res.json({ ...entry, aiEncouragement: encouragement });
-      } else {
-        res.json(entry);
-      }
+      res.json(entry);
     } catch (error) {
       res.status(500).json({ error: "Failed to create journal entry" });
     }

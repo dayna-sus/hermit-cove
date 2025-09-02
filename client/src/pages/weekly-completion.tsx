@@ -44,13 +44,6 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     setTimeout(() => setShowConfetti(false), 4000);
   }, [navigate]);
 
-  // Set existing reflection if available
-  useEffect(() => {
-    if (weeklyCompletion?.reflection && !weeklyReflection) {
-      setWeeklyReflection(weeklyCompletion.reflection);
-    }
-  }, [weeklyCompletion, weeklyReflection]);
-
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ["/api/users", userId],
     enabled: !!userId,
@@ -60,6 +53,13 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     queryKey: ["/api/users", userId, "weeks", week, "completion"],
     enabled: !!userId && !!week,
   });
+
+  // Set existing reflection if available
+  useEffect(() => {
+    if (weeklyCompletion?.reflection && !weeklyReflection) {
+      setWeeklyReflection(weeklyCompletion.reflection);
+    }
+  }, [weeklyCompletion, weeklyReflection]);
 
   const submitWeeklyCompletionMutation = useMutation({
     mutationFn: async (reflectionData: { reflection: string }) => {

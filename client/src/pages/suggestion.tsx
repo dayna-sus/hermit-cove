@@ -100,12 +100,14 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     },
   });
 
-  // Set reflection from existing data
+  // Set reflection from existing data and clear when changing suggestions
   useEffect(() => {
-    if (existingReflection?.reflection && !reflection) {
+    if (existingReflection?.reflection) {
       setReflection(existingReflection.reflection);
+    } else {
+      setReflection("");
     }
-  }, [existingReflection, reflection]);
+  }, [existingReflection, suggestion?.id]);
 
   const isLoading = suggestionLoading || reflectionLoading;
 

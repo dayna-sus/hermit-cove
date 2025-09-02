@@ -28,6 +28,7 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
   const week = parseInt(params.week);
   const day = parseInt(params.day);
 
+  // All hooks must be called before any early returns
   useEffect(() => {
     const storedUserId = localStorage.getItem("hermitCoveUserId");
     if (!storedUserId) {
@@ -98,6 +99,13 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       });
     },
   });
+
+  // Set reflection from existing data
+  useEffect(() => {
+    if (existingReflection?.reflection && !reflection) {
+      setReflection(existingReflection.reflection);
+    }
+  }, [existingReflection, reflection]);
 
   const isLoading = suggestionLoading || reflectionLoading;
 
@@ -192,13 +200,6 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
 
     completeSuggestionMutation.mutate();
   };
-
-  // Set reflection from existing data
-  useEffect(() => {
-    if (existingReflection?.reflection && !reflection) {
-      setReflection(existingReflection.reflection);
-    }
-  }, [existingReflection, reflection]);
 
   return (
     <div className="min-h-screen wave-pattern p-4 pb-24">

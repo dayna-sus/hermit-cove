@@ -46,7 +46,7 @@ export const COURSE_WEEKS = [
 export const CRAB_STAGES = [
   { stage: 0, emoji: "🐚", description: "Hidden in shell", progress: 0 },
   { stage: 1, emoji: "👀", description: "Eyes peeking out", progress: 16.67 },
-  { stage: 2, emoji: "🤏", description: "Claws showing", progress: 33.33 },
+  { stage: 2, emoji: "🦀", description: "Claws showing", progress: 33.33 },
   { stage: 3, emoji: "🦵", description: "Legs emerging", progress: 50 },
   { stage: 4, emoji: "🦀", description: "Half emerged", progress: 66.67 },
   { stage: 5, emoji: "🦀", description: "Almost free", progress: 83.33 },

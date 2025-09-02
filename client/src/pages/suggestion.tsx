@@ -170,20 +170,8 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     );
   }
 
-  const handleSubmitReflection = () => {
-    if (!reflection.trim()) {
-      toast({
-        title: "Reflection required",
-        description: "Please share your thoughts before submitting.",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    submitReflectionMutation.mutate({ reflection: reflection.trim() });
-  };
-
-  const handleCompleteAndContinue = () => {
+  const handleCompleteAndContinue = async () => {
     if (!existingReflection?.reflection && !reflection.trim()) {
       toast({
         title: "Reflection required",
@@ -193,9 +181,14 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       return;
     }
 
-    // If there's a new reflection that hasn't been submitted, submit it first
+    // If there's a new reflection that hasn't been submitted, submit it first to get AI encouragement
     if (reflection.trim() && reflection !== existingReflection?.reflection) {
-      submitReflectionMutation.mutate({ reflection: reflection.trim() });
+      try {
+        await submitReflectionMutation.mutateAsync({ reflection: reflection.trim() });
+      } catch (error) {
+        console.error("Failed to submit reflection:", error);
+        // Continue with completion even if reflection submission fails
+      }
     }
 
     completeSuggestionMutation.mutate();
@@ -289,16 +282,6 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                   
                   {/* Action Buttons */}
                   <div className="flex gap-3">
-                    {(!existingReflection?.aiResponse || reflection !== existingReflection?.reflection) && (
-                      <Button
-                        onClick={handleSubmitReflection}
-                        disabled={submitReflectionMutation.isPending || !reflection.trim()}
-                        variant="outline"
-                        data-testid="button-submit-reflection"
-                      >
-                        {submitReflectionMutation.isPending ? "Getting encouragement..." : "Get AI Encouragement"}
-                      </Button>
-                    )}
                     <Button
                       onClick={handleCompleteAndContinue}
                       disabled={completeSuggestionMutation.isPending || existingReflection?.completed}

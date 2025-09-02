@@ -284,7 +284,7 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                   )}
                   
                   {/* Action Buttons */}
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 flex-wrap">
                     <Button
                       onClick={handleCompleteAndContinue}
                       disabled={completeSuggestionMutation.isPending || existingReflection?.completed}
@@ -296,6 +296,13 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                         ? "Completed ✓" 
                         : "Mark Complete & Continue 🌊"
                       }
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate("/dashboard")}
+                      data-testid="button-back-to-main"
+                    >
+                      Go back to main page
                     </Button>
                   </div>
                 </div>

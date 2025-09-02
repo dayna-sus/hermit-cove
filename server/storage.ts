@@ -90,7 +90,7 @@ export class MemStorage implements IStorage {
       { week: 4, day: 2, title: "Speak Up in a Group", description: "Contribute at least one comment or question in a group setting. Choose something low-stakes to share.", category: "group" },
       { week: 4, day: 3, title: "Agree with Someone", description: "When someone in a group says something you agree with, voice your agreement: 'I think that's a great point' or 'I agree.'", category: "group" },
       { week: 4, day: 4, title: "Ask a Group Question", description: "Ask one question to the group about the topic being discussed. This shows engagement and interest.", category: "group" },
-      { week: 4, day: 5, title: "Include Someone Quiet", description: "If you notice someone being quiet in a group, gently invite their input: 'What do you think about this, [name]?'", category: "group" },
+      { week: 4, day: 5, title: "Compliment the Group", description: "Give a positive comment about the group's discussion or energy: 'This has been really helpful' or 'I love how thoughtful everyone is being.'", category: "group" },
       { week: 4, day: 6, title: "Share a Resource", description: "Share something helpful with the group - a link, book recommendation, or useful information related to your discussion.", category: "group" },
       { week: 4, day: 7, title: "Suggest a Group Activity", description: "Propose a small group activity or suggest continuing a conversation over coffee/lunch with interested members.", category: "group" },
 

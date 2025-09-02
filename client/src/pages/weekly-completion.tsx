@@ -289,6 +289,15 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
                 >
                   View Journal Entries 📚
                 </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/")}
+                  size="lg"
+                  className="px-6 py-4 text-lg font-medium"
+                  data-testid="button-back-to-hermit-cove"
+                >
+                  🏠 Back to Hermit Cove
+                </Button>
               </div>
 
               {/* Week Summary Stats */}

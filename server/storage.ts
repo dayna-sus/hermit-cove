@@ -71,7 +71,7 @@ export class MemStorage implements IStorage {
       { week: 2, day: 1, title: "Smile at Yourself", description: "Practice smiling genuinely at yourself in the mirror for 30 seconds. Notice how it feels and affects your mood.", category: "comfort" },
       { week: 2, day: 2, title: "Eye Contact with Cashiers", description: "Make brief, friendly eye contact with cashiers or service workers. Start with just a moment of connection.", category: "comfort" },
       { week: 2, day: 3, title: "Thank You Practice", description: "Make it a point to say 'thank you' with genuine appreciation to at least 3 people today, maintaining eye contact.", category: "comfort" },
-      { week: 2, day: 4, title: "Acknowledge Service Workers", description: "When receiving a delivery or mail, make brief eye contact and say 'thank you' to the delivery person or postal worker. A small gesture of recognition.", category: "comfort" },
+      { week: 2, day: 4, title: "Hold the Door", description: "When approaching a door and someone is behind you, hold it open for them. A simple 'here you go' or just a smile works perfectly.", category: "comfort" },
       { week: 2, day: 5, title: "Weather Comment", description: "Make one casual comment about the weather to someone (cashier, neighbor, coworker). Keep it simple and genuine.", category: "comfort" },
       { week: 2, day: 6, title: "Compliment Someone", description: "Give one genuine compliment to someone today. It could be about their shirt, helpfulness, or anything authentic you notice.", category: "comfort" },
       { week: 2, day: 7, title: "Phone Call Practice", description: "Make one phone call instead of sending a text. It could be to order food, ask about store hours, or call a family member.", category: "comfort" },

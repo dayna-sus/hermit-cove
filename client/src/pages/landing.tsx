@@ -114,7 +114,7 @@ export default function LandingPage() {
                 className="text-muted-foreground mb-8 max-w-xl mx-auto"
                 data-testid="hero-subtitle"
               >
-                Join others who have successfully overcome social anxiety through our gentle, research-backed approach.
+                Join others who have successfully overcome social anxiety through our gentle approach.
               </p>
 
               {/* Name Input Form */}

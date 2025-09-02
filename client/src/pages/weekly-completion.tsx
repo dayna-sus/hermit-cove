@@ -268,11 +268,11 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   onClick={handleContinue}
-                  size="lg"
-                  className="px-8 py-4 text-lg font-semibold"
+                  size="default"
+                  className="px-4 py-2 text-sm font-semibold"
                   data-testid="button-continue-journey"
                 >
                   {week >= 6 || user.completedSuggestions >= 42 
@@ -283,17 +283,17 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
                 <Button
                   variant="secondary"
                   onClick={() => navigate("/journal")}
-                  size="lg"
-                  className="px-6 py-4 text-lg font-medium"
+                  size="default"
+                  className="px-4 py-2 text-sm font-medium"
                   data-testid="button-view-journal"
                 >
-                  View Journal Entries 📚
+                  View Journal 📚
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => navigate("/")}
-                  size="lg"
-                  className="px-6 py-4 text-lg font-medium"
+                  size="default"
+                  className="px-4 py-2 text-sm font-medium"
                   data-testid="button-back-to-hermit-cove"
                 >
                   🏠 Back to Hermit Cove

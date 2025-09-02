@@ -316,6 +316,14 @@ export default function CourseDashboard() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
+                    onClick={() => navigate("/")}
+                    data-testid="button-go-to-landing"
+                  >
+                    🏠 Go back to main page
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
                     onClick={() => navigate("/journal")}
                     data-testid="button-quick-journal"
                   >

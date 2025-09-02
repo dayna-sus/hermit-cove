@@ -27,6 +27,8 @@ export const userReflections = pgTable("user_reflections", {
   userId: varchar("user_id").notNull(),
   suggestionId: varchar("suggestion_id").notNull(),
   reflection: text("reflection").notNull(),
+  aiResponse: text("ai_response"),
+  sentiment: text("sentiment"), // 'positive', 'negative', 'neutral'
   completed: boolean("completed").notNull().default(false),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
@@ -62,6 +64,8 @@ export const insertSuggestionSchema = createInsertSchema(suggestions).omit({
 
 export const insertUserReflectionSchema = createInsertSchema(userReflections).omit({
   id: true,
+  aiResponse: true,
+  sentiment: true,
   createdAt: true,
 });
 

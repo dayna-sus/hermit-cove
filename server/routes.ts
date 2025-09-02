@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { generateEncouragement, generateJournalEncouragement } from "./services/openai";
 import { 
   insertUserSchema, 
   insertUserReflectionSchema, 
@@ -84,7 +85,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Suggestion not found" });
       }
 
-      res.json(reflection);
+      // Generate AI encouragement
+      try {
+        const encouragement = await generateEncouragement(
+          reflectionData.reflection,
+          suggestion.description
+        );
+        
+        // Update the reflection with AI response
+        const updatedReflection = await storage.updateUserReflection(reflection.id, {
+          aiResponse: encouragement.message,
+          sentiment: encouragement.sentiment
+        });
+        
+        res.json(updatedReflection);
+      } catch (error) {
+        console.error('Failed to generate encouragement:', error);
+        // Still return the reflection even if AI fails
+        res.json(reflection);
+      }
     } catch (error) {
       console.error('Error creating reflection:', error);
       res.status(500).json({ error: "Failed to create reflection" });
@@ -154,7 +173,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const entryData = insertJournalEntrySchema.parse(req.body);
       const entry = await storage.createJournalEntry(entryData);
       
-      res.json(entry);
+      // Generate AI encouragement for journal entry
+      if (entryData.content && entryData.mood) {
+        try {
+          const encouragement = await generateJournalEncouragement(entryData.content, entryData.mood);
+          res.json({ ...entry, aiEncouragement: encouragement });
+        } catch (error) {
+          console.error('Failed to generate journal encouragement:', error);
+          res.json(entry);
+        }
+      } else {
+        res.json(entry);
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to create journal entry" });
     }

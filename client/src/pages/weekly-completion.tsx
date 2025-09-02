@@ -30,6 +30,7 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
 
   const week = parseInt(params.week);
 
+  // Initialize user and show confetti
   useEffect(() => {
     const storedUserId = localStorage.getItem("hermitCoveUserId");
     if (!storedUserId) {
@@ -42,6 +43,13 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 4000);
   }, [navigate]);
+
+  // Set existing reflection if available
+  useEffect(() => {
+    if (weeklyCompletion?.reflection && !weeklyReflection) {
+      setWeeklyReflection(weeklyCompletion.reflection);
+    }
+  }, [weeklyCompletion, weeklyReflection]);
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
     queryKey: ["/api/users", userId],
@@ -157,12 +165,6 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     }
   };
 
-  // Set existing reflection if available
-  useEffect(() => {
-    if (weeklyCompletion?.reflection && !weeklyReflection) {
-      setWeeklyReflection(weeklyCompletion.reflection);
-    }
-  }, [weeklyCompletion, weeklyReflection]);
 
   return (
     <>

@@ -163,7 +163,7 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                 Complete your current suggestions to unlock this one.
               </p>
               <Button onClick={() => navigate("/dashboard")}>
-                Return to Dashboard
+                Go back to main page
               </Button>
             </CardContent>
           </Card>

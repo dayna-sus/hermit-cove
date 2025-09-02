@@ -62,7 +62,7 @@ export default function FinalCelebrationPage() {
             <CardContent>
               <p className="text-muted-foreground">Unable to load user data.</p>
               <Button onClick={() => navigate("/dashboard")} className="mt-4">
-                Return to Dashboard
+                Go back to main page
               </Button>
             </CardContent>
           </Card>
@@ -89,7 +89,7 @@ export default function FinalCelebrationPage() {
                 Current progress: {user.completedSuggestions}/42 suggestions completed
               </p>
               <Button onClick={() => navigate("/dashboard")}>
-                Continue Your Journey
+                Go back to main page
               </Button>
             </CardContent>
           </Card>

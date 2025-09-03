@@ -285,18 +285,32 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                   
                   {/* Action Buttons */}
                   <div className="flex gap-3 flex-wrap">
-                    <Button
-                      onClick={handleCompleteAndContinue}
-                      disabled={completeSuggestionMutation.isPending || existingReflection?.completed}
-                      data-testid="button-complete-suggestion"
-                    >
-                      {completeSuggestionMutation.isPending 
-                        ? "Completing..." 
-                        : existingReflection?.completed 
-                        ? "Completed ✓" 
-                        : "Mark Complete & Continue 🌊"
-                      }
-                    </Button>
+                    {existingReflection?.completed ? (
+                      <Button
+                        onClick={() => {
+                          // Navigate to next suggestion or week completion
+                          if (day >= 7) {
+                            navigate(`/week/${week}/complete`);
+                          } else {
+                            navigate(`/suggestion/${week}/${day + 1}`);
+                          }
+                        }}
+                        data-testid="button-continue-journey"
+                      >
+                        Continue Journey 🌊
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleCompleteAndContinue}
+                        disabled={completeSuggestionMutation.isPending}
+                        data-testid="button-complete-suggestion"
+                      >
+                        {completeSuggestionMutation.isPending 
+                          ? "Completing..." 
+                          : "Mark Complete & Continue 🌊"
+                        }
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       onClick={() => navigate("/dashboard")}

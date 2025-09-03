@@ -123,6 +123,18 @@ export default function JournalPage() {
   return (
     <div className="min-h-screen wave-pattern p-4 pb-24">
       <div className="container mx-auto max-w-4xl">
+        {/* Navigation */}
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2"
+            data-testid="button-back-home"
+          >
+            🐚 Back to Home
+          </Button>
+        </div>
+
         {/* Journal Header */}
         <div className="text-center mb-8">
           <h2 

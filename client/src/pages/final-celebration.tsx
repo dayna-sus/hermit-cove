@@ -252,10 +252,10 @@ export default function FinalCelebrationPage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8 w-full max-w-4xl mx-auto">
                 <Button
                   size="lg"
-                  className="px-8 py-4 text-lg font-semibold"
+                  className="flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold"
                   onClick={() => {
                     toast({
                       title: "Coming Soon! 🚀",
@@ -270,7 +270,7 @@ export default function FinalCelebrationPage() {
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="px-8 py-4 text-lg font-semibold"
+                  className="flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold"
                   onClick={() => {
                     const shareText = `I just completed the Hermit Cove social anxiety recovery course! 🦀✨ 42 challenges completed and feeling confident! #HermitCove #SocialAnxietyRecovery #PersonalGrowth`;
                     if (navigator.share) {
@@ -294,7 +294,7 @@ export default function FinalCelebrationPage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="px-8 py-4 text-lg font-semibold"
+                  className="flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold"
                   onClick={() => navigate("/journal")}
                   data-testid="button-view-journals"
                 >

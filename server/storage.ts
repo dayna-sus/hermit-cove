@@ -87,7 +87,7 @@ export class MemStorage implements IStorage {
 
       // Week 4: Group Settings
       { week: 4, day: 1, title: "Attend a Small Group", description: "Join a small group activity (work meeting, class, community event) and commit to staying for the full duration.", category: "group" },
-      { week: 4, day: 2, title: "Speak Up in a Group", description: "Contribute at least one comment or question in a group setting. Choose something low-stakes to share.", category: "group" },
+      { week: 4, day: 2, title: "Sit Near Others", description: "In a group setting, choose to sit near the center or with others rather than in the back corner. Practice being physically present and visible in the group space.", category: "group" },
       { week: 4, day: 3, title: "Agree with Someone", description: "When someone in a group says something you agree with, voice your agreement: 'I think that's a great point' or 'I agree.'", category: "group" },
       { week: 4, day: 4, title: "Ask a Group Question", description: "Ask one question to the group about the topic being discussed. This shows engagement and interest.", category: "group" },
       { week: 4, day: 5, title: "Compliment the Group", description: "Give a positive comment about the group's discussion or energy: 'This has been really helpful' or 'I love how thoughtful everyone is being.'", category: "group" },

@@ -78,7 +78,7 @@ export class MemStorage implements IStorage {
 
       // Week 3: Small Interactions
       { week: 3, day: 1, title: "Ask for Help", description: "Ask someone for small help or directions, even if you already know the answer. Practice receiving assistance gracefully.", category: "interaction" },
-      { week: 3, day: 2, title: "Introduce Yourself", description: "Introduce yourself to one new person today - a neighbor, coworker, or someone in your regular environment.", category: "interaction" },
+      { week: 3, day: 2, title: "Give a Genuine Compliment", description: "Approach someone and give them a heartfelt compliment about something specific you've noticed - their work, kindness, or style. Practice both giving and receiving positive interactions.", category: "interaction" },
       { week: 3, day: 3, title: "Join a Short Conversation", description: "Add one comment or question to an existing conversation. Listen for natural entry points.", category: "interaction" },
       { week: 3, day: 4, title: "Express an Opinion", description: "Share a mild opinion about something neutral (weather, local event, TV show) in a conversation.", category: "interaction" },
       { week: 3, day: 5, title: "Ask Follow-up Questions", description: "When someone shares something with you, ask one follow-up question to show interest and keep the conversation flowing.", category: "interaction" },

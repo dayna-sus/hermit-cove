@@ -11,6 +11,84 @@ interface EncouragementResponse {
   encouragementLevel: 'gentle' | 'moderate' | 'strong';
 }
 
+// Array of varied fallback encouragement messages
+const fallbackMessages: EncouragementResponse[] = [
+  {
+    message: "Thank you for sharing your experience. Remember, growth happens one wave at a time. You're braver than you know! 🌊🦀",
+    sentiment: 'neutral',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "Every small step you take creates ripples of positive change. Your courage is inspiring! 🐚✨",
+    sentiment: 'positive',
+    encouragementLevel: 'gentle'
+  },
+  {
+    message: "Like a crab slowly emerging from its shell, you're discovering your own strength. Keep going! 🦀🌊",
+    sentiment: 'positive',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "The ocean doesn't rush its waves, and you don't need to rush your journey. You're exactly where you need to be. 🌊💙",
+    sentiment: 'neutral',
+    encouragementLevel: 'gentle'
+  },
+  {
+    message: "Each challenge you face is like a shell being polished by the waves - you're becoming more beautiful with every experience. 🐚⭐",
+    sentiment: 'positive',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "Your reflection shows real insight and growth. The tide is turning in your favor! 🌊🦀",
+    sentiment: 'positive',
+    encouragementLevel: 'strong'
+  },
+  {
+    message: "Progress isn't always visible on the surface, just like the powerful currents beneath calm waters. Trust your journey. 🌊✨",
+    sentiment: 'neutral',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "You're building confidence like a coral reef - slowly but surely, creating something strong and beautiful. 🐚🌊",
+    sentiment: 'positive',
+    encouragementLevel: 'gentle'
+  },
+  {
+    message: "Every experience, comfortable or challenging, adds to your treasure chest of wisdom. Well done! ⭐🦀",
+    sentiment: 'positive',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "Like the steady rhythm of waves on shore, your consistent effort is creating lasting change. Keep flowing forward! 🌊💙",
+    sentiment: 'positive',
+    encouragementLevel: 'strong'
+  }
+];
+
+function getRandomFallbackEncouragement(): EncouragementResponse {
+  const randomIndex = Math.floor(Math.random() * fallbackMessages.length);
+  return fallbackMessages[randomIndex];
+}
+
+// Array of varied journal encouragement messages
+const journalFallbackMessages: string[] = [
+  "Thank you for sharing your thoughts. Every reflection brings you closer to shore. 🐚✨",
+  "Your words show deep self-awareness. Like shells on the beach, each thought has its own beauty. 🌊🐚",
+  "Writing helps the waves of emotion find their natural rhythm. Keep expressing yourself! 💙⭐",
+  "Your journal is a safe harbor for your thoughts. Thank you for being honest with yourself. 🦀🌊",
+  "Each entry is like a message in a bottle - precious and meaningful. Your journey matters. 🐚💫",
+  "The tides of feeling ebb and flow, and you're learning to navigate them beautifully. 🌊✨",
+  "Your reflections are creating ripples of positive change in your life. Keep writing! 🦀💙",
+  "Like a lighthouse guiding ships, your self-awareness lights the way forward. 🌊⭐",
+  "Every word you write is a step on the path to understanding yourself better. Well done! 🐚🦀",
+  "Your openness is like the ocean - vast, deep, and full of possibilities. 🌊💙"
+];
+
+function getRandomJournalFallback(): string {
+  const randomIndex = Math.floor(Math.random() * journalFallbackMessages.length);
+  return journalFallbackMessages[randomIndex];
+}
+
 export async function generateEncouragement(
   reflection: string,
   suggestionDescription: string
@@ -52,12 +130,8 @@ Respond in JSON format: {
     };
   } catch (error) {
     console.error('Failed to generate encouragement:', error);
-    // Fallback encouragement
-    return {
-      message: "Thank you for sharing your experience. Remember, growth happens one wave at a time. You're braver than you know! 🌊🦀",
-      sentiment: 'neutral',
-      encouragementLevel: 'moderate'
-    };
+    // Fallback encouragement with variety
+    return getRandomFallbackEncouragement();
   }
 }
 
@@ -89,6 +163,6 @@ Keep it warm, authentic, and supportive.`;
     return response.choices[0].message.content || "Your journey is unique and valuable. Keep flowing forward like the gentle tide. 🌊💙";
   } catch (error) {
     console.error('Failed to generate journal encouragement:', error);
-    return "Thank you for sharing your thoughts. Every reflection brings you closer to shore. 🐚✨";
+    return getRandomJournalFallback();
   }
 }

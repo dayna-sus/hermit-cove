@@ -52,6 +52,7 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
   const { data: weeklyCompletion, isLoading: completionLoading } = useQuery<WeeklyCompletion>({
     queryKey: ["/api/users", userId, "weeks", week, "completion"],
     enabled: !!userId && !!week,
+    retry: false, // Don't retry if 404 - it's expected when no completion exists yet
   });
 
   // Set existing reflection if available
@@ -80,7 +81,7 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     },
   });
 
-  const isLoading = userLoading || completionLoading;
+  const isLoading = userLoading;
 
   if (!userId) {
     return null;

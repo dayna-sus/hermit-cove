@@ -59,7 +59,7 @@ export class MemStorage implements IStorage {
     // Initialize 6 weeks of course suggestions (42 total)
     const courseData = [
       // Week 1: Building Awareness
-      { week: 1, day: 1, title: "Notice Your Breathing", description: "Spend 5 minutes today observing your breathing patterns in social situations. Don't try to change anything, just notice when your breathing becomes shallow or rapid.", category: "awareness" },
+      { week: 1, day: 1, title: "Notice Your Breathing", description: "Take 5 minutes today to gently observe how you breathe when you're around other people. There's no need to change anything - simply notice if your breathing becomes shallow or speeds up. This gentle awareness is the first step in your journey.", category: "awareness" },
       { week: 1, day: 2, title: "Body Scan Check-in", description: "Before entering any social space, do a quick body scan. Notice where you hold tension and gently relax those areas.", category: "awareness" },
       { week: 1, day: 3, title: "Thought Observation", description: "Write down 3 thoughts you have before a social interaction. Don't judge them, just observe and note the patterns.", category: "awareness" },
       { week: 1, day: 4, title: "Comfort Zone Mapping", description: "Draw or list your current comfort zone. What social situations feel easy? Which ones feel challenging?", category: "awareness" },

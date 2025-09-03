@@ -111,11 +111,39 @@ export default function LandingPage() {
                 Ready to Begin Your Transformation?
               </h2>
               <p 
-                className="text-muted-foreground mb-8 max-w-xl mx-auto"
+                className="text-muted-foreground mb-6 max-w-xl mx-auto"
                 data-testid="hero-subtitle"
               >
                 Join others who have successfully overcome social anxiety through our gentle approach.
               </p>
+              
+              {/* App Details */}
+              <div className="text-left bg-muted/30 rounded-2xl p-6 mb-8 max-w-3xl mx-auto">
+                <h3 className="text-lg font-semibold text-foreground mb-4 text-center">How Hermit Cove Works</h3>
+                <div className="grid md:grid-cols-2 gap-6 text-sm text-muted-foreground">
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">🎯 Structured Daily Practice</h4>
+                    <p>Complete one gentle suggestion each day, designed to gradually expand your comfort zone without overwhelming you.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">🤖 AI-Powered Support</h4>
+                    <p>Receive personalized encouragement and insights after each reflection, helping you process your experiences.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">📝 Personal Journal</h4>
+                    <p>Track your thoughts, feelings, and progress in a private journal that's always available to you.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-2">🦀 Progress Visualization</h4>
+                    <p>Watch your crab mascot emerge from its shell as you complete challenges, symbolizing your own growth.</p>
+                  </div>
+                </div>
+                <div className="mt-6 p-4 bg-accent/20 rounded-lg">
+                  <p className="text-sm text-center text-muted-foreground">
+                    <strong>Self-paced and flexible</strong> - Complete suggestions at your own speed, skip days when needed, and return anytime to continue your journey.
+                  </p>
+                </div>
+              </div>
 
               {/* Name Input Form */}
               {showNameInput && (

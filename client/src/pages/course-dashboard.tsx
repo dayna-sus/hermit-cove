@@ -319,7 +319,7 @@ export default function CourseDashboard() {
                     onClick={() => navigate("/")}
                     data-testid="button-go-to-landing"
                   >
-                    🐚 Go back to Hermit Cove
+                    🐚 Back to Home
                   </Button>
                   <Button 
                     variant="outline" 

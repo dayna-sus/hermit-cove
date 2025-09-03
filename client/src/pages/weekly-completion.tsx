@@ -296,7 +296,7 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
                   className="px-4 py-2 text-sm font-medium"
                   data-testid="button-back-to-hermit-cove"
                 >
-                  🐚 Back to Hermit Cove
+                  🐚 Back to Home
                 </Button>
               </div>
 

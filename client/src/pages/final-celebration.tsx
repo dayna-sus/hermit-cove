@@ -256,7 +256,13 @@ export default function FinalCelebrationPage() {
                 <Button
                   size="lg"
                   className="px-8 py-4 text-lg font-semibold"
-                  onClick={() => navigate("/")}
+                  onClick={() => {
+                    toast({
+                      title: "Coming Soon! 🚀",
+                      description: "The advanced course is being developed. Stay tuned for more challenges!",
+                      duration: 4000,
+                    });
+                  }}
                   data-testid="button-new-journey"
                 >
                   🔄 Start Advanced Course

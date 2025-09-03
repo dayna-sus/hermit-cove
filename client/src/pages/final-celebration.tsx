@@ -99,7 +99,7 @@ export default function FinalCelebrationPage() {
   }
 
   const journalCount = journalEntries?.length || 0;
-  const daysSinceStart = user.createdAt ? Math.ceil((new Date().getTime() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)) : 42;
+  const daysOfGrowth = user.completedSuggestions || 42; // Show completed suggestions as days of growth
 
   return (
     <>
@@ -187,7 +187,7 @@ export default function FinalCelebrationPage() {
                       className="text-2xl font-bold text-foreground"
                       data-testid="final-journey-days"
                     >
-                      {daysSinceStart}
+                      {daysOfGrowth}
                     </div>
                     <div className="text-sm text-muted-foreground">Days of Growth</div>
                   </CardContent>

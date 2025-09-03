@@ -81,7 +81,9 @@ export default function CourseDashboard() {
   const isWeekComplete = user.currentSuggestion > 7;
 
   const handleContinueJourney = () => {
-    if (isWeekComplete) {
+    // If user has completed all suggestions for current week but currentSuggestion is still 7,
+    // they should go to week completion page
+    if (isWeekComplete || user.currentSuggestion > 7) {
       navigate(`/week/${user.currentWeek}/complete`);
     } else {
       navigate(`/suggestion/${user.currentWeek}/${user.currentSuggestion}`);

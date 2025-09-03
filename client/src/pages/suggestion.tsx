@@ -83,13 +83,15 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       });
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: async (updatedUser) => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", userId] });
       
-      // Navigate to next suggestion or week completion
+      // Navigate based on what we just completed and the updated user progress
       if (day >= 7) {
+        // Just completed last day of week - go to week completion page
         navigate(`/week/${week}/complete`);
       } else {
+        // Go to next day in current week
         navigate(`/suggestion/${week}/${day + 1}`);
       }
       

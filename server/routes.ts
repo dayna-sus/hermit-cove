@@ -241,6 +241,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Fix user progress (temporary endpoint for debugging)
+  app.post("/api/users/:userId/fix-progress", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // If user completed 7 suggestions but still on week 1, advance them
+      if (user.completedSuggestions >= 7 && user.currentWeek === 1) {
+        const updatedUser = await storage.updateUser(userId, {
+          currentWeek: 2,
+          currentSuggestion: 1
+        });
+        res.json(updatedUser);
+      } else {
+        res.json(user);
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fix progress" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

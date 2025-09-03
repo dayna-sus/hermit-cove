@@ -122,7 +122,7 @@ export default function FinalCelebrationPage() {
                   className="text-2xl md:text-3xl text-primary mb-6"
                   data-testid="celebration-subtitle"
                 >
-                  Welcome to Your New Shell-Free Life!
+                  Welcome to Your New Out-of-Shell Life!
                 </h2>
                 <p 
                   className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"

@@ -183,7 +183,7 @@ export default function LandingPage() {
             <Card className="p-6 border border-border shadow-sm">
               <CardContent className="p-0 text-center">
                 <div className="text-4xl mb-4">📅</div>
-                <h3 className="font-semibold text-foreground mb-2">{new Date().toLocaleDateString()}</h3>
+                <h3 className="font-semibold text-foreground mb-2">6 Weeks</h3>
                 <p className="text-muted-foreground text-sm">Self-paced journey with weekly milestones</p>
               </CardContent>
             </Card>

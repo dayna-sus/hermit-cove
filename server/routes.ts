@@ -152,13 +152,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const completedSuggestions = user.completedSuggestions + 1;
-      const currentWeek = Math.floor((completedSuggestions - 1) / 7) + 1;
-      const currentSuggestion = ((completedSuggestions - 1) % 7) + 1;
+      
+      // Calculate what the next suggestion should be
+      const nextSuggestionNumber = completedSuggestions + 1;
+      const nextWeek = Math.min(Math.ceil(nextSuggestionNumber / 7), 6);
+      const nextDay = ((nextSuggestionNumber - 1) % 7) + 1;
 
       const updatedUser = await storage.updateUser(userId, {
         completedSuggestions,
-        currentWeek: Math.min(currentWeek, 6),
-        currentSuggestion: currentSuggestion === 7 ? 7 : currentSuggestion + 1
+        currentWeek: nextWeek,
+        currentSuggestion: nextDay
       });
 
       res.json(updatedUser);

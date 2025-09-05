@@ -344,16 +344,23 @@ export default function FinalCelebrationPage() {
               </div>
 
               {/* About Creator Link */}
-              <div className="mt-6 text-center">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate("/about-creator")}
-                  className="px-6 py-3 text-lg font-semibold flex items-center gap-2 mx-auto"
-                  data-testid="button-about-creator"
-                >
-                  👋 Meet the Creator
-                </Button>
+              <div className="mt-8 text-center">
+                <div className="bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 rounded-2xl p-6 border-2 border-primary/30 shadow-lg">
+                  <p className="text-sm text-muted-foreground mb-3">
+                    ✨ Want to know the story behind Hermit Cove? ✨
+                  </p>
+                  <Button
+                    size="lg"
+                    onClick={() => navigate("/about-creator")}
+                    className="px-8 py-4 text-xl font-bold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-3 mx-auto"
+                    data-testid="button-about-creator"
+                  >
+                    👋 Meet the Creator 🌟
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Learn about my journey & share your feedback
+                  </p>
+                </div>
               </div>
 
               {/* Personal Message */}

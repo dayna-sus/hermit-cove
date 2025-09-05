@@ -39,10 +39,10 @@ export default function Navigation({ userProgress }: NavigationProps) {
 
   return (
     <nav 
-      className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-card/80 backdrop-blur-lg rounded-full px-6 py-3 border border-border shadow-lg z-50"
+      className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-card/80 backdrop-blur-lg rounded-full px-3 py-2 border border-border shadow-md z-50"
       data-testid="bottom-navigation"
     >
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3">
         {navItems.map(({ path, icon: Icon, label, testId }) => {
           const isActive = location === path;
           return (
@@ -50,13 +50,13 @@ export default function Navigation({ userProgress }: NavigationProps) {
               key={path}
               onClick={() => navigate(path)}
               className={`
-                flex flex-col items-center gap-1 transition-colors
+                flex flex-col items-center gap-0.5 transition-colors
                 ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}
               `}
               data-testid={testId}
             >
-              <Icon className="w-5 h-5" />
-              <span className="text-xs">{label}</span>
+              <Icon className="w-4 h-4" />
+              <span className="text-xs leading-tight">{label}</span>
             </button>
           );
         })}

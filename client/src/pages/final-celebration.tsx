@@ -346,9 +346,10 @@ export default function FinalCelebrationPage() {
               {/* About Creator Link */}
               <div className="mt-6 text-center">
                 <Button
-                  variant="ghost"
+                  variant="outline"
+                  size="lg"
                   onClick={() => navigate("/about-creator")}
-                  className="text-muted-foreground hover:text-foreground flex items-center gap-2 mx-auto"
+                  className="px-6 py-3 text-lg font-semibold flex items-center gap-2 mx-auto"
                   data-testid="button-about-creator"
                 >
                   👋 Meet the Creator

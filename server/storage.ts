@@ -249,3 +249,35 @@ export class MemStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
+
+// Helper function to create a test user with all suggestions completed
+export async function createTestUser(): Promise<string> {
+  const testUser = await storage.createUser({
+    name: "Test User",
+    currentWeek: 6,
+    currentSuggestion: 7,
+    completedSuggestions: 42
+  });
+  
+  // Create reflections for all 42 suggestions
+  const suggestions = await storage.getAllSuggestions();
+  for (let i = 0; i < 42; i++) {
+    await storage.createUserReflection({
+      userId: testUser.id,
+      suggestionId: suggestions[i].id,
+      reflection: "Completed this challenge successfully!",
+      completed: true
+    });
+  }
+  
+  // Create weekly completions for all 6 weeks
+  for (let week = 1; week <= 6; week++) {
+    await storage.createWeeklyCompletion({
+      userId: testUser.id,
+      week: week,
+      reflection: `Completed week ${week} successfully!`
+    });
+  }
+  
+  return testUser.id;
+}

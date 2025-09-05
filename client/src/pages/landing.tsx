@@ -39,6 +39,29 @@ export default function LandingPage() {
     },
   });
 
+  const createTestUserMutation = useMutation({
+    mutationFn: async (): Promise<User> => {
+      const res = await apiRequest("POST", "/api/users/test-complete", {});
+      return res.json();
+    },
+    onSuccess: (user) => {
+      // Store user ID in localStorage for session persistence
+      localStorage.setItem("hermitCoveUserId", user.id);
+      navigate("/final-celebration");
+      toast({
+        title: "Test User Created! 🎉",
+        description: "You can now view the celebration page.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to create test user.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleBeginJourney = () => {
     setShowNameInput(true);
   };
@@ -200,6 +223,16 @@ export default function LandingPage() {
                     data-testid="button-continue-journey"
                   >
                     📍 Continue Your Journey
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => createTestUserMutation.mutate()}
+                    disabled={createTestUserMutation.isPending}
+                    size="lg"
+                    className="px-8 py-4 text-lg font-semibold border-2 border-dashed"
+                    data-testid="button-test-celebration"
+                  >
+                    {createTestUserMutation.isPending ? "Creating..." : "🎉 View Celebration Page"}
                   </Button>
                 </div>
               )}

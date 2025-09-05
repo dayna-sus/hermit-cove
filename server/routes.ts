@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage, createTestUser } from "./storage";
 import { generateEncouragement, generateJournalEncouragement } from "./services/openai";
 import { 
   insertUserSchema, 
@@ -19,6 +19,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(user);
     } catch (error) {
       res.status(400).json({ error: "Invalid user data" });
+    }
+  });
+
+  // Create test user with all suggestions completed (for testing celebration page)
+  app.post("/api/users/test-complete", async (req, res) => {
+    try {
+      const userId = await createTestUser();
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create test user" });
     }
   });
 

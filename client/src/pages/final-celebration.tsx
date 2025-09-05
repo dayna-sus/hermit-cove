@@ -343,6 +343,18 @@ export default function FinalCelebrationPage() {
                 </div>
               </div>
 
+              {/* About Creator Link */}
+              <div className="mt-6 text-center">
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate("/about-creator")}
+                  className="text-muted-foreground hover:text-foreground flex items-center gap-2 mx-auto"
+                  data-testid="button-about-creator"
+                >
+                  👋 Meet the Creator
+                </Button>
+              </div>
+
               {/* Personal Message */}
               <div className="mt-8 text-lg text-primary font-medium" data-testid="personal-message">
                 Congratulations, {user.name}! You have officially emerged from your shell! 🐚➡️🦀

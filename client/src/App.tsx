@@ -13,6 +13,7 @@ import SuggestionPage from "@/pages/suggestion";
 import WeeklyCompletionPage from "@/pages/weekly-completion";
 import JournalPage from "@/pages/journal";
 import FinalCelebrationPage from "@/pages/final-celebration";
+import AboutCreatorPage from "@/pages/about-creator";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -57,6 +58,9 @@ function AppContent() {
         
         {/* Final celebration */}
         <Route path="/final-celebration" component={FinalCelebrationPage} />
+        
+        {/* About creator */}
+        <Route path="/about-creator" component={AboutCreatorPage} />
         
         {/* Legacy celebrate route - redirect to dashboard */}
         <Route path="/celebrate">

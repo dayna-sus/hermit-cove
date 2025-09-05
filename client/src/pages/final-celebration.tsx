@@ -346,7 +346,7 @@ export default function FinalCelebrationPage() {
               {/* About Creator Link */}
               <div className="mt-8 text-center">
                 <div className="bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 rounded-2xl p-6 border-2 border-primary/30 shadow-lg">
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <p className="text-lg font-bold text-foreground mb-3">
                     ✨ Want to know the story behind Hermit Cove? ✨
                   </p>
                   <Button
@@ -357,7 +357,7 @@ export default function FinalCelebrationPage() {
                   >
                     👋 Meet the Creator 🌟
                   </Button>
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="text-base font-bold text-foreground mt-3">
                     Learn about my journey & share your feedback
                   </p>
                 </div>

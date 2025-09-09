@@ -161,7 +161,7 @@ export default function AboutCreatorPage() {
                   className="text-foreground/80 mb-8 text-center text-lg font-medium"
                   data-testid="feedback-form-description"
                 >
-                  I'd love to hear about your experience with Hermit Cove and how I can make it better
+                  Your insights and suggestions are invaluable for enhancing the Hermit Cove experience for future users
                 </p>
               </div>
               

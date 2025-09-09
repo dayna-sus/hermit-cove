@@ -1,9 +1,50 @@
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AboutCreatorPage() {
   const [, navigate] = useLocation();
+  const [feedback, setFeedback] = useState("");
+  const { toast } = useToast();
+
+  const submitFeedbackMutation = useMutation({
+    mutationFn: async (feedbackText: string) => {
+      const res = await apiRequest("POST", "/api/feedback", { message: feedbackText });
+      return res.json();
+    },
+    onSuccess: () => {
+      setFeedback("");
+      toast({
+        title: "Thank you! 🙏",
+        description: "Your feedback has been sent successfully. I appreciate you taking the time to share your thoughts!",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to send feedback. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmitFeedback = () => {
+    if (!feedback.trim()) {
+      toast({
+        title: "Message required",
+        description: "Please enter your feedback before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+    submitFeedbackMutation.mutate(feedback.trim());
+  };
 
   return (
     <div className="min-h-screen wave-pattern p-4 pb-24">
@@ -97,34 +138,65 @@ export default function AboutCreatorPage() {
               </div>
             </div>
 
-            {/* Contact Information */}
-            <div className="text-center bg-accent/10 rounded-2xl p-6 md:p-8">
+            {/* Feedback Form */}
+            <div className="bg-accent/10 rounded-2xl p-6 md:p-8">
               <h2 
                 className="text-xl font-semibold text-foreground mb-4 flex items-center justify-center gap-2"
-                data-testid="contact-title"
+                data-testid="feedback-form-title"
               >
-                <span>📧</span> Get in Touch
+                <span>💬</span> Share Your Feedback
               </h2>
               <p 
-                className="text-muted-foreground mb-4"
-                data-testid="contact-description"
+                className="text-muted-foreground mb-6 text-center"
+                data-testid="feedback-form-description"
               >
-                I'd love to hear about your experience with Hermit Cove
+                I'd love to hear about your experience with Hermit Cove and how I can make it better
               </p>
-              <div 
-                className="bg-background rounded-lg p-4 inline-block border border-border"
-                data-testid="contact-email"
-              >
-                <span className="font-mono text-lg text-foreground">
-                  dayna.aamodt@gmail.com
-                </span>
+              
+              <div className="max-w-2xl mx-auto">
+                <Label 
+                  htmlFor="feedback-message" 
+                  className="text-sm font-medium text-foreground mb-2 block"
+                >
+                  Your thoughts, suggestions, or comments:
+                </Label>
+                <Textarea
+                  id="feedback-message"
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  placeholder="Share your experience with the app, suggestions for improvement, or any thoughts you'd like me to know..."
+                  className="min-h-32 mb-4 resize-none"
+                  data-testid="feedback-textarea"
+                  disabled={submitFeedbackMutation.isPending}
+                />
+                
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button
+                    onClick={handleSubmitFeedback}
+                    disabled={submitFeedbackMutation.isPending || !feedback.trim()}
+                    className="px-6 py-2"
+                    data-testid="button-submit-feedback"
+                  >
+                    {submitFeedbackMutation.isPending ? "Sending..." : "🚀 Send Feedback"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setFeedback("")}
+                    disabled={submitFeedbackMutation.isPending}
+                    className="px-6 py-2"
+                    data-testid="button-clear-feedback"
+                  >
+                    Clear
+                  </Button>
+                </div>
+                
+                <p 
+                  className="text-xs text-muted-foreground mt-4 text-center"
+                  data-testid="feedback-privacy-note"
+                >
+                  Your feedback will be sent directly to the creator. Thank you for helping improve Hermit Cove! 🦀
+                </p>
               </div>
-              <p 
-                className="text-sm text-muted-foreground mt-4"
-                data-testid="contact-note"
-              >
-                Feel free to share your success stories, suggestions, or any feedback about the app
-              </p>
             </div>
 
             {/* Gratitude Section */}

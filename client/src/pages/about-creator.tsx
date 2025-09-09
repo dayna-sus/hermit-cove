@@ -139,24 +139,36 @@ export default function AboutCreatorPage() {
             </div>
 
             {/* Feedback Form */}
-            <div className="bg-accent/10 rounded-2xl p-6 md:p-8">
-              <h2 
-                className="text-xl font-semibold text-foreground mb-4 flex items-center justify-center gap-2"
-                data-testid="feedback-form-title"
-              >
-                <span>💬</span> Share Your Feedback
-              </h2>
-              <p 
-                className="text-muted-foreground mb-6 text-center"
-                data-testid="feedback-form-description"
-              >
-                I'd love to hear about your experience with Hermit Cove and how I can make it better
-              </p>
+            <div className="bg-gradient-to-br from-primary/15 via-secondary/15 to-accent/15 rounded-3xl p-8 md:p-10 border-2 border-primary/20 shadow-xl relative overflow-hidden">
+              {/* Decorative background elements */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/5 rounded-full translate-y-12 -translate-x-12"></div>
               
-              <div className="max-w-2xl mx-auto">
+              <div className="relative z-10">
+                <div className="text-center mb-2">
+                  <div className="text-4xl mb-3">💬✨</div>
+                </div>
+                <h2 
+                  className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                  data-testid="feedback-form-title"
+                >
+                  Share Your Feedback
+                </h2>
+                <div className="flex justify-center mb-6">
+                  <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+                </div>
+                <p 
+                  className="text-foreground/80 mb-8 text-center text-lg font-medium"
+                  data-testid="feedback-form-description"
+                >
+                  I'd love to hear about your experience with Hermit Cove and how I can make it better
+                </p>
+              </div>
+              
+              <div className="max-w-2xl mx-auto relative z-10">
                 <Label 
                   htmlFor="feedback-message" 
-                  className="text-sm font-medium text-foreground mb-2 block"
+                  className="text-base font-semibold text-foreground mb-3 block"
                 >
                   Your thoughts, suggestions, or comments:
                 </Label>
@@ -165,16 +177,16 @@ export default function AboutCreatorPage() {
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Share your experience with the app, suggestions for improvement, or any thoughts you'd like me to know..."
-                  className="min-h-32 mb-4 resize-none"
+                  className="min-h-32 mb-6 resize-none border-2 border-primary/30 focus:border-primary/60 bg-background/80 backdrop-blur-sm shadow-lg"
                   data-testid="feedback-textarea"
                   disabled={submitFeedbackMutation.isPending}
                 />
                 
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     onClick={handleSubmitFeedback}
                     disabled={submitFeedbackMutation.isPending || !feedback.trim()}
-                    className="px-6 py-2"
+                    className="px-8 py-3 text-lg font-semibold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg transform hover:scale-105 transition-all duration-200"
                     data-testid="button-submit-feedback"
                   >
                     {submitFeedbackMutation.isPending ? "Sending..." : "🚀 Send Feedback"}
@@ -183,7 +195,7 @@ export default function AboutCreatorPage() {
                     variant="outline"
                     onClick={() => setFeedback("")}
                     disabled={submitFeedbackMutation.isPending}
-                    className="px-6 py-2"
+                    className="px-8 py-3 text-lg font-semibold border-2 border-primary/30 hover:border-primary/60 shadow-md"
                     data-testid="button-clear-feedback"
                   >
                     Clear
@@ -191,7 +203,7 @@ export default function AboutCreatorPage() {
                 </div>
                 
                 <p 
-                  className="text-xs text-muted-foreground mt-4 text-center"
+                  className="text-sm text-muted-foreground mt-6 text-center font-medium"
                   data-testid="feedback-privacy-note"
                 >
                   Your feedback will be sent directly to the creator. Thank you for helping improve Hermit Cove! 🦀

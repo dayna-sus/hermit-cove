@@ -1,10 +1,5 @@
 import { useLocation } from "wouter";
-import { Home, Book, Trophy, Sparkles } from "lucide-react";
-
-// Custom crab icon component
-const CrabIcon = ({ className }: { className?: string }) => (
-  <span className={`text-base ${className}`}>🦀</span>
-);
+import { Home, Map, Book, Trophy, Sparkles } from "lucide-react";
 
 interface NavigationProps {
   userProgress?: {
@@ -18,7 +13,7 @@ export default function Navigation({ userProgress }: NavigationProps) {
   
   const navItems = [
     { path: "/", icon: Home, label: "Home", testId: "nav-home" },
-    { path: "/dashboard", icon: CrabIcon, label: "Journey", testId: "nav-journey" },
+    { path: "/dashboard", icon: Map, label: "Journey", testId: "nav-journey" },
     { path: "/journal", icon: Book, label: "Journal", testId: "nav-journal" },
   ];
 

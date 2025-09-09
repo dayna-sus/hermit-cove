@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage, createTestUser } from "./storage";
 import { generateEncouragement, generateJournalEncouragement } from "./services/openai";
+import { sendFeedbackEmail } from "./services/email";
 import { 
   insertUserSchema, 
   insertUserReflectionSchema, 
@@ -42,14 +43,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Message is required" });
       }
 
-      // For now, just log the feedback (email service will be added next)
-      console.log('Feedback received:', message.trim());
+      // Send feedback email to the creator (email address is hidden in the service)
+      await sendFeedbackEmail({
+        message: message.trim(),
+        timestamp: new Date(),
+        userAgent: req.get('User-Agent')
+      });
       
-      // TODO: Send email to creator (dayna.aamodt@gmail.com)
-      
-      res.json({ success: true, message: "Feedback received successfully" });
+      res.json({ success: true, message: "Feedback sent successfully" });
     } catch (error) {
-      console.error('Error handling feedback:', error);
+      console.error('Error sending feedback:', error);
       res.status(500).json({ error: "Failed to submit feedback" });
     }
   });

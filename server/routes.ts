@@ -33,6 +33,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Submit feedback from users
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message || typeof message !== 'string' || !message.trim()) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // For now, just log the feedback (email service will be added next)
+      console.log('Feedback received:', message.trim());
+      
+      // TODO: Send email to creator (dayna.aamodt@gmail.com)
+      
+      res.json({ success: true, message: "Feedback received successfully" });
+    } catch (error) {
+      console.error('Error handling feedback:', error);
+      res.status(500).json({ error: "Failed to submit feedback" });
+    }
+  });
+
   // Get user
   app.get("/api/users/:id", async (req, res) => {
     try {

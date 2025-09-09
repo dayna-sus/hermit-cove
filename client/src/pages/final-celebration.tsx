@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,11 @@ export default function FinalCelebrationPage() {
   const [, navigate] = useLocation();
   const [userId, setUserId] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const { toast } = useToast();
+  
+  // Debounce ref to prevent multiple calls
+  const shareTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("hermitCoveUserId");
@@ -271,25 +275,82 @@ export default function FinalCelebrationPage() {
                   variant="secondary"
                   size="lg"
                   className="flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base sm:text-lg font-semibold"
+                  disabled={isSharing}
                   onClick={() => {
+                    if (isSharing) return;
+                    
+                    // Clear any existing timeout
+                    if (shareTimeoutRef.current) {
+                      clearTimeout(shareTimeoutRef.current);
+                    }
+                    
+                    setIsSharing(true);
+                    
+                    // Set timeout to reset sharing state
+                    shareTimeoutRef.current = setTimeout(() => {
+                      setIsSharing(false);
+                    }, 3000);
+                    
                     const shareText = `I just completed the Hermit Cove social anxiety recovery course! 🦀✨ 42 challenges completed and feeling confident! #HermitCove #SocialAnxietyRecovery #PersonalGrowth`;
-                    if (navigator.share) {
+                    
+                    if (navigator.share && typeof navigator.share === 'function') {
                       navigator.share({
                         title: 'Hermit Cove Success!',
                         text: shareText,
                         url: window.location.origin
+                      }).then(() => {
+                        setIsSharing(false);
+                        if (shareTimeoutRef.current) {
+                          clearTimeout(shareTimeoutRef.current);
+                        }
+                      }).catch((error) => {
+                        // Handle errors gracefully - many are just cancellations
+                        setIsSharing(false);
+                        if (shareTimeoutRef.current) {
+                          clearTimeout(shareTimeoutRef.current);
+                        }
+                        
+                        // Only show fallback for actual errors, not cancellations
+                        if (error.name !== 'AbortError' && !error.message.includes('cancellation')) {
+                          navigator.clipboard?.writeText(shareText).then(() => {
+                            toast({
+                              title: "Copied to clipboard! 📋",
+                              description: "Share your success story with others!",
+                            });
+                          }).catch(() => {
+                            toast({
+                              title: "Share not available",
+                              description: "Please copy the text manually to share your success!",
+                            });
+                          });
+                        }
                       });
                     } else {
-                      navigator.clipboard.writeText(shareText);
-                      toast({
-                        title: "Copied to clipboard! 📋",
-                        description: "Share your success story with others!",
+                      // Fallback for browsers without Web Share API
+                      navigator.clipboard?.writeText(shareText).then(() => {
+                        setIsSharing(false);
+                        if (shareTimeoutRef.current) {
+                          clearTimeout(shareTimeoutRef.current);
+                        }
+                        toast({
+                          title: "Copied to clipboard! 📋",
+                          description: "Share your success story with others!",
+                        });
+                      }).catch(() => {
+                        setIsSharing(false);
+                        if (shareTimeoutRef.current) {
+                          clearTimeout(shareTimeoutRef.current);
+                        }
+                        toast({
+                          title: "Share not available",
+                          description: "Please copy the text manually to share your success!",
+                        });
                       });
                     }
                   }}
                   data-testid="button-share-success"
                 >
-                  📱 Share Your Success
+                  {isSharing ? "Sharing..." : "📱 Share Your Success"}
                 </Button>
                 <Button
                   variant="outline"

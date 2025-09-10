@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ export default function AdminDashboard() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   // Check authentication status on component mount
   useEffect(() => {
@@ -113,11 +115,14 @@ export default function AdminDashboard() {
     localStorage.removeItem('adminToken');
     setAuthToken("");
     setIsAuthenticated(false);
-    setIsLoginModalOpen(true);
+    
     toast({
       title: "Logged out",
       description: "You have been logged out of the admin dashboard"
     });
+    
+    // Redirect to landing page
+    setLocation("/");
   };
 
   // Show login modal if not authenticated

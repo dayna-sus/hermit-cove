@@ -12,9 +12,9 @@ import {
 
 // Admin authentication middleware
 function requireAdminAuth(req: Request, res: Response, next: NextFunction) {
-  const adminToken = process.env.ADMIN_TOKEN;
+  const rawAdminToken = process.env.ADMIN_TOKEN;
   
-  if (!adminToken) {
+  if (!rawAdminToken) {
     console.error('ADMIN_TOKEN environment variable is not set');
     return res.status(500).json({ 
       error: 'Configuration error', 
@@ -22,6 +22,8 @@ function requireAdminAuth(req: Request, res: Response, next: NextFunction) {
     });
   }
   
+  // Normalize admin token
+  const adminToken = rawAdminToken.trim().replace(/^"|"$/g, '');
   const cookieToken = req.cookies.adminAuth;
   
   if (!cookieToken || cookieToken !== adminToken) {
@@ -327,9 +329,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin authentication endpoint
   app.post("/api/admin/auth", (req, res) => {
     const { token } = req.body;
-    const adminToken = process.env.ADMIN_TOKEN;
+    const rawAdminToken = process.env.ADMIN_TOKEN;
     
-    if (!adminToken) {
+    if (!rawAdminToken) {
       console.error('ADMIN_TOKEN environment variable is not set');
       return res.status(500).json({ 
         error: 'Configuration error', 
@@ -337,7 +339,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
     
-    if (!token || token !== adminToken) {
+    // Normalize tokens by trimming whitespace and removing quotes
+    const adminToken = rawAdminToken.trim().replace(/^"|"$/g, '');
+    const inputToken = (token || '').trim();
+    
+    // Temporary debug logging (remove after fixing)
+    console.log('Token lengths:', { envLen: adminToken.length, inputLen: inputToken.length });
+    
+    if (!inputToken || inputToken !== adminToken) {
       return res.status(401).json({ 
         error: 'Invalid token', 
         message: 'Please check your admin credentials' 
@@ -347,9 +356,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Set secure httpOnly cookie
     res.cookie('adminAuth', adminToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      secure: false, // Allow for development
+      sameSite: 'lax', // More lenient for development
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      path: '/' // Ensure cookie is available for all paths
     });
     
     res.json({ 
@@ -362,8 +372,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/logout", (req, res) => {
     res.clearCookie('adminAuth', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
+      secure: false,
+      sameSite: 'lax',
+      path: '/'
     });
     
     res.json({ 

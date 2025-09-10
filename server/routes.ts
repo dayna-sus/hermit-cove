@@ -350,10 +350,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
     
-    // Set secure httpOnly cookie
+    // Set secure httpOnly cookie - adjusted for Replit environment
     res.cookie('adminAuth', adminToken, {
       httpOnly: true,
-      secure: false, // Allow for development
+      secure: true, // Required for sameSite: 'none'
       sameSite: 'none', // Allow cross-origin for Replit
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       path: '/' // Ensure cookie is available for all paths
@@ -369,7 +369,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/logout", (req, res) => {
     res.clearCookie('adminAuth', {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: 'none',
       path: '/'
     });

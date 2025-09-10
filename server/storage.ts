@@ -562,8 +562,8 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// For development, keep MemStorage available but switch to DatabaseStorage
-export const storage = new DatabaseStorage();
+// Use DatabaseStorage if DATABASE_URL is available, otherwise use MemStorage
+export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();
 
 // Helper function to create a test user with all suggestions completed
 export async function createTestUser(): Promise<string> {

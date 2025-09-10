@@ -41,9 +41,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize course data in the database
-  await (storage as DatabaseStorage).initializeCourseData();
-  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -74,5 +71,10 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
+    
+    // Initialize course data in the background after server is running
+    (storage as DatabaseStorage).initializeCourseData().catch(err => {
+      log(`Database initialization error: ${err.message}`);
+    });
   });
 })();

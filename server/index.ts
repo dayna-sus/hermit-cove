@@ -64,7 +64,18 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
+  // In production, check for autoscale-provided PORT first
+  let port;
+  if (app.get("env") === "production") {
+    // In production, use any PORT that's not the hardcoded 5000 from .replit
+    port = parseInt(process.env.PORT || process.env.REPLIT_PORT || '5000', 10);
+    // If we're still getting 5000 in production, try some common autoscale ports
+    if (port === 5000 && process.env.NODE_ENV === 'production') {
+      port = parseInt(process.env.REPLIT_APP_PORT || process.env.AUTOSCALE_PORT || '8080', 10);
+    }
+  } else {
+    port = parseInt(process.env.PORT || '5000', 10);
+  }
   server.listen({
     port,
     host: "0.0.0.0",

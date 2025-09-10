@@ -5,14 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import CrabProgress from "@/components/crab-progress";
-import ConfettiCelebration from "@/components/confetti-celebration";
 import { useToast } from "@/hooks/use-toast";
 import type { User, JournalEntry } from "@shared/schema";
 
 export default function FinalCelebrationPage() {
   const [, navigate] = useLocation();
   const [userId, setUserId] = useState<string | null>(null);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const { toast } = useToast();
   
@@ -26,10 +24,6 @@ export default function FinalCelebrationPage() {
       return;
     }
     setUserId(storedUserId);
-    
-    // Show extended confetti celebration
-    setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 8000);
   }, [navigate]);
 
   const { data: user, isLoading: userLoading } = useQuery<User>({
@@ -106,10 +100,7 @@ export default function FinalCelebrationPage() {
   const daysOfGrowth = user.completedSuggestions || 42; // Show completed suggestions as days of growth
 
   return (
-    <>
-      <ConfettiCelebration isActive={showConfetti} duration={8000} />
-      
-      <div className="min-h-screen wave-pattern p-4 pb-24">
+    <div className="min-h-screen wave-pattern p-4 pb-24">
         <div className="container mx-auto max-w-4xl">
           <Card className="rounded-3xl p-8 md:p-12 border border-border shadow-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5">
             <CardContent className="p-0 text-center">
@@ -445,6 +436,5 @@ export default function FinalCelebrationPage() {
           </Card>
         </div>
       </div>
-    </>
   );
 }

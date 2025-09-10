@@ -1,6 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, BookOpen, Calendar, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Users, BookOpen, Calendar, TrendingUp, Shield, LogOut } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminStats {
   totalUsers: number;
@@ -21,9 +28,141 @@ interface AdminStats {
 }
 
 export default function AdminDashboard() {
-  const { data: stats, isLoading } = useQuery<AdminStats>({
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState("");
+  const [loginToken, setLoginToken] = useState("");
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { toast } = useToast();
+
+  // Check authentication status on component mount
+  useEffect(() => {
+    // Try to fetch admin stats to check if we're authenticated
+    // If we have a valid cookie, this will succeed
+    apiRequest("/api/admin/stats")
+      .then(() => {
+        setAuthToken("authenticated");
+        setIsAuthenticated(true);
+      })
+      .catch((error) => {
+        // Not authenticated or token expired
+        setIsLoginModalOpen(true);
+      });
+  }, []);
+
+  // Query admin stats using cookies for authentication
+  const { data: stats, isLoading, error } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
+    enabled: isAuthenticated,
+    retry: false,
+    queryFn: async () => {
+      return await apiRequest("/api/admin/stats");
+    }
   });
+
+  const handleLogin = async () => {
+    if (!loginToken.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an admin token",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsAuthenticating(true);
+    try {
+      await apiRequest("/api/admin/auth", {
+        method: "POST",
+        body: { token: loginToken.trim() }
+      });
+
+      // Authentication successful - cookies are set automatically by server
+      setAuthToken("authenticated"); // Just a flag since we use cookies now
+      setIsAuthenticated(true);
+      setIsLoginModalOpen(false);
+      setLoginToken("");
+      
+      toast({
+        title: "Success",
+        description: "Admin authentication successful"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Authentication Failed",
+        description: error.message || "Invalid admin token",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest("/api/admin/logout", { method: "POST" });
+    } catch (error) {
+      // Logout endpoint might fail but we still want to clear client state
+    }
+    
+    setAuthToken("");
+    setIsAuthenticated(false);
+    setIsLoginModalOpen(true);
+    toast({
+      title: "Logged out",
+      description: "You have been logged out of the admin dashboard"
+    });
+  };
+
+  // Show login modal if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 dark:from-blue-950 dark:to-teal-950 flex items-center justify-center p-4">
+        <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
+          <DialogContent className="sm:max-w-md" data-testid="admin-login-modal">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Admin Authentication
+              </DialogTitle>
+              <DialogDescription>
+                Enter your admin token to access the dashboard
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="admin-token">Admin Token</Label>
+                <Input
+                  id="admin-token"
+                  type="password"
+                  placeholder="Enter admin token"
+                  value={loginToken}
+                  onChange={(e) => setLoginToken(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  data-testid="input-admin-token"
+                />
+              </div>
+              <Button 
+                onClick={handleLogin} 
+                disabled={isAuthenticating}
+                className="w-full"
+                data-testid="button-admin-login"
+              >
+                {isAuthenticating ? "Authenticating..." : "Access Dashboard"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // Handle 401 errors
+  useEffect(() => {
+    if (error && (error as any).status === 401) {
+      handleLogout();
+    }
+  }, [error]);
 
   if (isLoading) {
     return (
@@ -54,13 +193,24 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 dark:from-blue-950 dark:to-teal-950 p-4">
       <div className="container mx-auto max-w-6xl" data-testid="admin-dashboard">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            🦀 Hermit Cove Admin Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Monitor your social anxiety recovery app's usage and user progress
-          </p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              🦀 Hermit Cove Admin Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Monitor your social anxiety recovery app's usage and user progress
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={handleLogout}
+            className="flex items-center gap-2"
+            data-testid="button-admin-logout"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
         </div>
 
         {/* Stats Cards */}

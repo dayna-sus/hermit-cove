@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage, createTestUser } from "./storage";
 import { generateEncouragement, generateJournalEncouragement } from "./services/openai";
@@ -9,6 +9,30 @@ import {
   insertJournalEntrySchema,
   insertWeeklyCompletionSchema 
 } from "@shared/schema";
+
+// Admin authentication middleware
+function requireAdminAuth(req: Request, res: Response, next: NextFunction) {
+  const adminToken = process.env.ADMIN_TOKEN;
+  
+  if (!adminToken) {
+    console.error('ADMIN_TOKEN environment variable is not set');
+    return res.status(500).json({ 
+      error: 'Configuration error', 
+      message: 'Server configuration issue' 
+    });
+  }
+  
+  const cookieToken = req.cookies.adminAuth;
+  
+  if (!cookieToken || cookieToken !== adminToken) {
+    return res.status(401).json({ 
+      error: 'Unauthorized', 
+      message: 'Admin authentication required' 
+    });
+  }
+  
+  next();
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -300,8 +324,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin endpoints for dashboard analytics
-  app.get("/api/admin/stats", async (req, res) => {
+  // Admin authentication endpoint
+  app.post("/api/admin/auth", (req, res) => {
+    const { token } = req.body;
+    const adminToken = process.env.ADMIN_TOKEN;
+    
+    if (!adminToken) {
+      console.error('ADMIN_TOKEN environment variable is not set');
+      return res.status(500).json({ 
+        error: 'Configuration error', 
+        message: 'Server configuration issue' 
+      });
+    }
+    
+    if (!token || token !== adminToken) {
+      return res.status(401).json({ 
+        error: 'Invalid token', 
+        message: 'Please check your admin credentials' 
+      });
+    }
+    
+    // Set secure httpOnly cookie
+    res.cookie('adminAuth', adminToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+    
+    res.json({ 
+      success: true, 
+      message: 'Authentication successful'
+    });
+  });
+  
+  // Admin logout endpoint
+  app.post("/api/admin/logout", (req, res) => {
+    res.clearCookie('adminAuth', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+    
+    res.json({ 
+      success: true, 
+      message: 'Logged out successfully' 
+    });
+  });
+
+  // Admin endpoints for dashboard analytics (protected)
+  app.get("/api/admin/stats", requireAdminAuth, async (req, res) => {
     try {
       const stats = await storage.getAdminStats();
       res.json(stats);

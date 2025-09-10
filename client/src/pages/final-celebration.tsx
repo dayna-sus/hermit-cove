@@ -428,6 +428,19 @@ export default function FinalCelebrationPage() {
               <div className="mt-8 text-lg text-primary font-medium" data-testid="personal-message">
                 Congratulations, {user.name}! You have officially emerged from your shell! 🐚➡️🦀
               </div>
+
+              {/* Admin Access Button - Small and discreet */}
+              <div className="mt-12 flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/admin")}
+                  className="text-xs text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted/50 transition-all duration-200"
+                  data-testid="button-admin-access"
+                >
+                  ⚙️ Admin
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

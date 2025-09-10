@@ -52,10 +52,6 @@ export default function LandingPage() {
       // Store user ID in localStorage for session persistence
       localStorage.setItem("hermitCoveUserId", user.id);
       navigate("/final-celebration");
-      toast({
-        title: "Test User Created! 🎉",
-        description: "You can now view the celebration page.",
-      });
     },
     onError: () => {
       toast({

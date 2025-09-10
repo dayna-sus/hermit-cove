@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { pgTable, text, varchar, integer, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -24,8 +25,8 @@ export const suggestions = pgTable("suggestions", {
 
 export const userReflections = pgTable("user_reflections", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull(),
-  suggestionId: varchar("suggestion_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  suggestionId: varchar("suggestion_id").notNull().references(() => suggestions.id),
   reflection: text("reflection").notNull(),
   aiResponse: text("ai_response"),
   sentiment: text("sentiment"), // 'positive', 'negative', 'neutral'
@@ -35,7 +36,7 @@ export const userReflections = pgTable("user_reflections", {
 
 export const journalEntries = pgTable("journal_entries", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
   content: text("content").notNull(),
   mood: text("mood"), // 'great', 'good', 'okay', 'struggling'
   week: integer("week"),
@@ -45,7 +46,7 @@ export const journalEntries = pgTable("journal_entries", {
 
 export const weeklyCompletions = pgTable("weekly_completions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
   week: integer("week").notNull(),
   reflection: text("reflection"),
   completedAt: timestamp("completed_at").notNull().default(sql`now()`),
@@ -90,3 +91,27 @@ export type JournalEntry = typeof journalEntries.$inferSelect;
 export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
 export type WeeklyCompletion = typeof weeklyCompletions.$inferSelect;
 export type InsertWeeklyCompletion = z.infer<typeof insertWeeklyCompletionSchema>;
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  reflections: many(userReflections),
+  journalEntries: many(journalEntries),
+  weeklyCompletions: many(weeklyCompletions),
+}));
+
+export const suggestionsRelations = relations(suggestions, ({ many }) => ({
+  reflections: many(userReflections),
+}));
+
+export const userReflectionsRelations = relations(userReflections, ({ one }) => ({
+  user: one(users, { fields: [userReflections.userId], references: [users.id] }),
+  suggestion: one(suggestions, { fields: [userReflections.suggestionId], references: [suggestions.id] }),
+}));
+
+export const journalEntriesRelations = relations(journalEntries, ({ one }) => ({
+  user: one(users, { fields: [journalEntries.userId], references: [users.id] }),
+}));
+
+export const weeklyCompletionsRelations = relations(weeklyCompletions, ({ one }) => ({
+  user: one(users, { fields: [weeklyCompletions.userId], references: [users.id] }),
+}));

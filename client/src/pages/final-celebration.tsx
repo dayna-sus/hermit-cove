@@ -417,7 +417,7 @@ export default function FinalCelebrationPage() {
 
               {/* Personal Message */}
               <div className="mt-8 text-lg text-primary font-medium" data-testid="personal-message">
-                Congratulations, {user.name}! You have officially emerged from your shell! 🐚➡️🦀
+                Congratulations! You have officially emerged from your shell! 🐚➡️🦀
               </div>
 
               {/* Admin Access Button - Small and discreet */}

@@ -16,7 +16,7 @@ import {
   weeklyCompletions
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -44,6 +44,25 @@ export interface IStorage {
   // Weekly completion operations
   getWeeklyCompletion(userId: string, week: number): Promise<WeeklyCompletion | undefined>;
   createWeeklyCompletion(completion: InsertWeeklyCompletion): Promise<WeeklyCompletion>;
+  
+  // Admin operations
+  getAdminStats(): Promise<{
+    totalUsers: number;
+    totalReflections: number;
+    totalJournalEntries: number;
+    totalWeeklyCompletions: number;
+    recentUsers: Array<{
+      id: string;
+      name: string;
+      currentWeek: number;
+      completedSuggestions: number;
+      createdAt: string;
+    }>;
+    weeklyProgress: Array<{
+      week: number;
+      completedUsers: number;
+    }>;
+  }>;
 }
 
 export class MemStorage implements IStorage {
@@ -253,6 +272,39 @@ export class MemStorage implements IStorage {
     this.weeklyCompletions.set(id, completion);
     return completion;
   }
+
+  // Add admin stats method for MemStorage
+  async getAdminStats() {
+    const allUsers = Array.from(this.users.values());
+    const allReflections = Array.from(this.userReflections.values());
+    const allJournalEntries = Array.from(this.journalEntries.values());
+    const allWeeklyCompletions = Array.from(this.weeklyCompletions.values());
+
+    // Calculate weekly progress for MemStorage
+    const weeklyProgress = [];
+    for (let week = 1; week <= 6; week++) {
+      const completedUsers = allWeeklyCompletions.filter(c => c.week === week).length;
+      weeklyProgress.push({ week, completedUsers });
+    }
+
+    return {
+      totalUsers: allUsers.length,
+      totalReflections: allReflections.length,
+      totalJournalEntries: allJournalEntries.length,
+      totalWeeklyCompletions: allWeeklyCompletions.length,
+      recentUsers: allUsers
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .slice(0, 10)
+        .map(user => ({
+          id: user.id,
+          name: user.name,
+          currentWeek: user.currentWeek,
+          completedSuggestions: user.completedSuggestions,
+          createdAt: user.createdAt.toISOString()
+        })),
+      weeklyProgress
+    };
+  }
 }
 
 // DatabaseStorage implementation
@@ -431,6 +483,81 @@ export class DatabaseStorage implements IStorage {
     // Insert all course suggestions
     for (const data of courseData) {
       await this.createSuggestion(data);
+    }
+  }
+
+  async getAdminStats() {
+    try {
+      // Get total counts using database queries
+      const [usersResult] = await db.select({ count: sql<number>`count(*)` }).from(users);
+      const [reflectionsResult] = await db.select({ count: sql<number>`count(*)` }).from(userReflections);
+      const [journalResult] = await db.select({ count: sql<number>`count(*)` }).from(journalEntries);
+      const [weeklyResult] = await db.select({ count: sql<number>`count(*)` }).from(weeklyCompletions);
+
+      const totalUsers = Number(usersResult?.count || 0);
+      const totalReflections = Number(reflectionsResult?.count || 0);
+      const totalJournalEntries = Number(journalResult?.count || 0);
+      const totalWeeklyCompletions = Number(weeklyResult?.count || 0);
+
+      // Get recent users (last 10)
+      const recentUsers = await db
+        .select({
+          id: users.id,
+          name: users.name,
+          currentWeek: users.currentWeek,
+          completedSuggestions: users.completedSuggestions,
+          createdAt: users.createdAt
+        })
+        .from(users)
+        .orderBy(desc(users.createdAt))
+        .limit(10);
+
+      // Calculate weekly progress
+      const weeklyProgress = [];
+      for (let week = 1; week <= 6; week++) {
+        const [weekResult] = await db
+          .select({ count: sql<number>`count(distinct ${weeklyCompletions.userId})` })
+          .from(weeklyCompletions)
+          .where(eq(weeklyCompletions.week, week));
+        
+        weeklyProgress.push({
+          week,
+          completedUsers: Number(weekResult?.count || 0)
+        });
+      }
+
+      return {
+        totalUsers,
+        totalReflections,
+        totalJournalEntries,
+        totalWeeklyCompletions,
+        recentUsers: recentUsers.map(user => ({
+          id: user.id,
+          name: user.name,
+          currentWeek: user.currentWeek,
+          completedSuggestions: user.completedSuggestions,
+          createdAt: user.createdAt.toISOString()
+        })),
+        weeklyProgress
+      };
+    } catch (error) {
+      console.error('Error getting admin stats:', error);
+      // Return empty stats if there's an error
+      return {
+        totalUsers: 0,
+        totalReflections: 0,
+        totalJournalEntries: 0,
+        totalWeeklyCompletions: 0,
+        recentUsers: [],
+        weeklyProgress: [
+          { week: 1, completedUsers: 0 },
+          { week: 2, completedUsers: 0 },
+          { week: 3, completedUsers: 0 },
+          { week: 4, completedUsers: 0 },
+          { week: 5, completedUsers: 0 },
+          { week: 6, completedUsers: 0 }
+        ]
+      };
     }
   }
 }

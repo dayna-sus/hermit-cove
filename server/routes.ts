@@ -300,6 +300,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoints for dashboard analytics
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const stats = await storage.getAdminStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching admin stats:', error);
+      res.status(500).json({ error: "Failed to fetch admin statistics" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

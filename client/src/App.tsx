@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { initGA } from "./lib/analytics";
+import { useAnalytics } from "./hooks/use-analytics";
 
 // Pages
 import LandingPage from "@/pages/landing";
@@ -14,6 +16,7 @@ import WeeklyCompletionPage from "@/pages/weekly-completion";
 import JournalPage from "@/pages/journal";
 import FinalCelebrationPage from "@/pages/final-celebration";
 import AboutCreatorPage from "@/pages/about-creator";
+import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
 // Components
@@ -23,6 +26,9 @@ import type { User } from "@shared/schema";
 
 function AppContent() {
   const [userId, setUserId] = useState<string | null>(null);
+  
+  // Track page views when routes change
+  useAnalytics();
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("hermitCoveUserId");
@@ -62,6 +68,9 @@ function AppContent() {
         {/* About creator */}
         <Route path="/about-creator" component={AboutCreatorPage} />
         
+        {/* Admin dashboard */}
+        <Route path="/admin" component={AdminDashboard} />
+        
         {/* Legacy celebrate route - redirect to dashboard */}
         <Route path="/celebrate">
           {() => {
@@ -86,6 +95,16 @@ function AppContent() {
 }
 
 function App() {
+  // Initialize Google Analytics when app loads
+  useEffect(() => {
+    // Verify required environment variable is present
+    if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
+      console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
+    } else {
+      initGA();
+    }
+  }, []);
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

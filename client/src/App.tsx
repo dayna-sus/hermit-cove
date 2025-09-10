@@ -20,7 +20,6 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
 // Components
-import Navigation from "@/components/navigation";
 
 import type { User } from "@shared/schema";
 
@@ -83,13 +82,6 @@ function AppContent() {
         <Route component={NotFound} />
       </Switch>
       
-      {/* Navigation - only show if user exists and not on landing page */}
-      {userId && user && (
-        <Navigation userProgress={{
-          completedSuggestions: user.completedSuggestions,
-          currentWeek: user.currentWeek,
-        }} />
-      )}
     </div>
   );
 }

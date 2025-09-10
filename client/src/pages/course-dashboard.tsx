@@ -33,9 +33,6 @@ export default function CourseDashboard() {
 
   const isLoading = userLoading || suggestionsLoading;
 
-  if (!userId) {
-    return null;
-  }
 
   if (isLoading) {
     return (

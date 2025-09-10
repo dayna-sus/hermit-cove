@@ -38,9 +38,6 @@ export default function FinalCelebrationPage() {
 
   const isLoading = userLoading || journalLoading;
 
-  if (!userId) {
-    return null;
-  }
 
   if (isLoading) {
     return (

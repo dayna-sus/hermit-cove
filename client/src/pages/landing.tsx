@@ -18,8 +18,10 @@ export default function LandingPage() {
 
   const createUserMutation = useMutation({
     mutationFn: async (userData: InsertUser): Promise<User> => {
-      const res = await apiRequest("POST", "/api/users", userData);
-      return res.json();
+      return await apiRequest("/api/users", {
+        method: "POST",
+        body: userData
+      });
     },
     onSuccess: (user) => {
       // Store user ID in localStorage for session persistence
@@ -41,8 +43,10 @@ export default function LandingPage() {
 
   const createTestUserMutation = useMutation({
     mutationFn: async (): Promise<User> => {
-      const res = await apiRequest("POST", "/api/users/test-complete", {});
-      return res.json();
+      return await apiRequest("/api/users/test-complete", {
+        method: "POST",
+        body: {}
+      });
     },
     onSuccess: (user) => {
       // Store user ID in localStorage for session persistence

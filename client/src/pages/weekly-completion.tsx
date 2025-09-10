@@ -66,11 +66,13 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     mutationFn: async (reflectionData: { reflection: string }) => {
       if (!userId) throw new Error("No user ID");
       
-      const res = await apiRequest("POST", `/api/users/${userId}/complete-week`, {
-        week,
-        reflection: reflectionData.reflection,
+      return await apiRequest(`/api/users/${userId}/complete-week`, {
+        method: "POST",
+        body: {
+          week,
+          reflection: reflectionData.reflection,
+        }
       });
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", userId, "weeks", week, "completion"] });

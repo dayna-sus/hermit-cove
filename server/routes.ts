@@ -343,9 +343,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const adminToken = rawAdminToken.trim().replace(/^"|"$/g, '');
     const inputToken = (token || '').trim();
     
-    // Temporary debug logging (remove after fixing)
-    console.log('Token lengths:', { envLen: adminToken.length, inputLen: inputToken.length });
-    
     if (!inputToken || inputToken !== adminToken) {
       return res.status(401).json({ 
         error: 'Invalid token', 
@@ -357,7 +354,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.cookie('adminAuth', adminToken, {
       httpOnly: true,
       secure: false, // Allow for development
-      sameSite: 'lax', // More lenient for development
+      sameSite: 'none', // Allow cross-origin for Replit
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       path: '/' // Ensure cookie is available for all paths
     });
@@ -373,7 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.clearCookie('adminAuth', {
       httpOnly: true,
       secure: false,
-      sameSite: 'lax',
+      sameSite: 'none',
       path: '/'
     });
     

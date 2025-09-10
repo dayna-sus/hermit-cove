@@ -60,6 +60,13 @@ export default function AdminDashboard() {
     }
   });
 
+  // Handle 401 errors - moved to top to fix hooks order
+  useEffect(() => {
+    if (error && (error as any).status === 401) {
+      handleLogout();
+    }
+  }, [error]);
+
   const handleLogin = async () => {
     if (!loginToken.trim()) {
       toast({
@@ -157,12 +164,6 @@ export default function AdminDashboard() {
     );
   }
 
-  // Handle 401 errors
-  useEffect(() => {
-    if (error && (error as any).status === 401) {
-      handleLogout();
-    }
-  }, [error]);
 
   if (isLoading) {
     return (

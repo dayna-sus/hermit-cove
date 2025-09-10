@@ -24,9 +24,12 @@ function requireAdminAuth(req: Request, res: Response, next: NextFunction) {
   
   // Normalize admin token
   const adminToken = rawAdminToken.trim().replace(/^"|"$/g, '');
-  const cookieToken = req.cookies.adminAuth;
   
-  if (!cookieToken || cookieToken !== adminToken) {
+  // Get token from Authorization header
+  const authHeader = req.headers.authorization;
+  const headerToken = authHeader?.replace('Bearer ', '');
+  
+  if (!headerToken || headerToken !== adminToken) {
     return res.status(401).json({ 
       error: 'Unauthorized', 
       message: 'Admin authentication required' 
@@ -350,30 +353,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
     
-    // Set secure httpOnly cookie - adjusted for Replit environment
-    res.cookie('adminAuth', adminToken, {
-      httpOnly: true,
-      secure: true, // Required for sameSite: 'none'
-      sameSite: 'none', // Allow cross-origin for Replit
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      path: '/' // Ensure cookie is available for all paths
-    });
-    
     res.json({ 
       success: true, 
-      message: 'Authentication successful'
+      message: 'Authentication successful',
+      token: adminToken // Return token for client to store
     });
   });
   
   // Admin logout endpoint
   app.post("/api/admin/logout", (req, res) => {
-    res.clearCookie('adminAuth', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/'
-    });
-    
+    // No server-side action needed for token-based auth
     res.json({ 
       success: true, 
       message: 'Logged out successfully' 

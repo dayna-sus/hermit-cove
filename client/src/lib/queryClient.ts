@@ -20,12 +20,19 @@ export async function apiRequest(
 ): Promise<any> {
   const { method = "GET", body, headers = {} } = options || {};
   
+  // Add admin token to Authorization header if available and accessing admin endpoints
+  const adminToken = localStorage.getItem('adminToken');
+  const isAdminRequest = url.includes('/api/admin/');
+  
+  const requestHeaders = {
+    ...(body ? { "Content-Type": "application/json" } : {}),
+    ...(isAdminRequest && adminToken ? { "Authorization": `Bearer ${adminToken}` } : {}),
+    ...headers,
+  };
+  
   const res = await fetch(url, {
     method,
-    headers: {
-      ...(body ? { "Content-Type": "application/json" } : {}),
-      ...headers,
-    },
+    headers: requestHeaders,
     body: body ? JSON.stringify(body) : undefined,
     credentials: "include",
   });

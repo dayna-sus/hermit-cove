@@ -37,20 +37,16 @@ export default function AdminDashboard() {
 
   // Check authentication status on component mount
   useEffect(() => {
-    // Try to fetch admin stats to check if we're authenticated
-    // If we have a valid cookie, this will succeed
-    apiRequest("/api/admin/stats")
-      .then(() => {
-        setAuthToken("authenticated");
-        setIsAuthenticated(true);
-      })
-      .catch((error) => {
-        // Not authenticated or token expired
-        setIsLoginModalOpen(true);
-      });
+    const storedToken = localStorage.getItem('adminToken');
+    if (storedToken) {
+      setAuthToken(storedToken);
+      setIsAuthenticated(true);
+    } else {
+      setIsLoginModalOpen(true);
+    }
   }, []);
 
-  // Query admin stats using cookies for authentication
+  // Query admin stats using token authentication
   const { data: stats, isLoading, error } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
     enabled: isAuthenticated,
@@ -79,13 +75,14 @@ export default function AdminDashboard() {
 
     setIsAuthenticating(true);
     try {
-      await apiRequest("/api/admin/auth", {
+      const response = await apiRequest("/api/admin/auth", {
         method: "POST",
         body: { token: loginToken.trim() }
       });
 
-      // Authentication successful - cookies are set automatically by server
-      setAuthToken("authenticated"); // Just a flag since we use cookies now
+      // Store token in localStorage for subsequent requests
+      localStorage.setItem('adminToken', response.token);
+      setAuthToken(response.token);
       setIsAuthenticated(true);
       setIsLoginModalOpen(false);
       setLoginToken("");
@@ -112,6 +109,8 @@ export default function AdminDashboard() {
       // Logout endpoint might fail but we still want to clear client state
     }
     
+    // Clear token from localStorage
+    localStorage.removeItem('adminToken');
     setAuthToken("");
     setIsAuthenticated(false);
     setIsLoginModalOpen(true);

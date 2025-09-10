@@ -41,6 +41,11 @@ function requireAdminAuth(req: Request, res: Response, next: NextFunction) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Health check for autoscale deployment
+  app.get("/health", (_req, res) => {
+    res.status(200).send("ok");
+  });
+  
   // Create or get user
   app.post("/api/users", async (req, res) => {
     try {

@@ -240,7 +240,7 @@ export default function LandingPage() {
           </Card>
 
           {/* Course Overview */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12">
             <Card className="p-6 border border-border shadow-sm">
               <CardContent className="p-0 text-center">
                 <div className="text-4xl mb-4">📅</div>

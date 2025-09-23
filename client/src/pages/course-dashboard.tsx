@@ -358,7 +358,7 @@ export default function CourseDashboard() {
                 <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <span>🗓️</span> All Weeks
                 </h3>
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {COURSE_WEEKS.map((week) => {
                     const weekCompleted = user.completedSuggestions >= week.week * 7;
                     const weekInProgress = user.currentWeek === week.week;

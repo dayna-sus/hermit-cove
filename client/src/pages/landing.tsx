@@ -210,7 +210,7 @@ export default function LandingPage() {
                   <Button
                     onClick={handleBeginJourney}
                     size="lg"
-                    className="w-full sm:w-48 lg:w-56 px-4 py-3 sm:py-4 text-base sm:text-lg font-semibold"
+                    className="w-full sm:w-52 lg:w-64 px-4 py-3 sm:py-4 text-base sm:text-lg font-semibold"
                     data-testid="button-begin-journey"
                   >
                     🌟 Begin Your Journey
@@ -219,7 +219,7 @@ export default function LandingPage() {
                     variant="secondary"
                     onClick={handleContinueJourney}
                     size="lg"
-                    className="w-full sm:w-48 lg:w-56 px-4 py-3 sm:py-4 text-base sm:text-lg font-semibold"
+                    className="w-full sm:w-52 lg:w-64 px-4 py-3 sm:py-4 text-base sm:text-lg font-semibold"
                     data-testid="button-continue-journey"
                   >
                     📍 Continue Journey
@@ -229,7 +229,7 @@ export default function LandingPage() {
                     onClick={() => createTestUserMutation.mutate()}
                     disabled={createTestUserMutation.isPending}
                     size="lg"
-                    className="w-full sm:w-48 lg:w-56 px-4 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-dashed"
+                    className="w-full sm:w-52 lg:w-64 px-4 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-dashed"
                     data-testid="button-test-celebration"
                   >
                     {createTestUserMutation.isPending ? "Creating..." : "🎉 View Celebration"}

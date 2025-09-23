@@ -130,7 +130,7 @@ export default function CourseDashboard() {
             </div>
             
             {/* Crab Emergence Stages */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center overflow-x-auto">
               {[
                 { emoji: "🐚", label: "Shell", progress: 0 },
                 { emoji: "👀", label: "Eyes", progress: 16.67 },
@@ -142,17 +142,17 @@ export default function CourseDashboard() {
               ].map((stage, index) => (
                 <div 
                   key={index} 
-                  className="flex flex-col items-center gap-1"
+                  className="flex flex-col items-center gap-1 min-w-0 flex-shrink-0"
                   data-testid={`stage-${index}`}
                 >
                   <span 
-                    className={`text-2xl transition-opacity ${
+                    className={`text-lg sm:text-2xl transition-opacity ${
                       progressPercent >= stage.progress ? 'opacity-100' : 'opacity-30'
                     }`}
                   >
                     {stage.emoji}
                   </span>
-                  <span className="text-xs text-muted-foreground">{stage.label}</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">{stage.label}</span>
                 </div>
               ))}
             </div>
@@ -183,7 +183,7 @@ export default function CourseDashboard() {
                 </p>
                 
                 {/* Weekly Progress */}
-                <div className="grid grid-cols-7 gap-2 mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-6">
                   {[1, 2, 3, 4, 5, 6, 7].map((day) => {
                     const isCompleted = user.currentSuggestion > day || user.completedSuggestions >= (user.currentWeek - 1) * 7 + day;
                     const isCurrent = user.currentSuggestion === day && !isWeekComplete;
@@ -193,7 +193,7 @@ export default function CourseDashboard() {
                       <div
                         key={day}
                         className={`
-                          rounded-lg p-3 text-center font-medium transition-colors
+                          rounded-lg p-2 sm:p-3 text-center font-medium transition-colors
                           ${isCompleted 
                             ? 'bg-primary text-primary-foreground' 
                             : isCurrent 
@@ -204,7 +204,7 @@ export default function CourseDashboard() {
                         data-testid={`day-${day}`}
                       >
                         <div className="text-xs mb-1">Day {day}</div>
-                        <div className="text-lg">
+                        <div className="text-sm sm:text-lg">
                           {isCompleted ? '✓' : isCurrent ? '📝' : isLocked ? '🔒' : '🏆'}
                         </div>
                       </div>

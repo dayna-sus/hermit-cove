@@ -50,14 +50,17 @@ export default function JournalPage() {
     mutationFn: async (entryData: { content: string; mood?: string }) => {
       if (!userId) throw new Error("No user ID");
       
-      const res = await apiRequest("POST", "/api/journal", {
-        userId,
-        content: entryData.content,
-        mood: entryData.mood,
-        week: user?.currentWeek,
-        day: user?.currentSuggestion,
+      const res = await apiRequest("/api/journal", {
+        method: "POST",
+        body: {
+          userId,
+          content: entryData.content,
+          mood: entryData.mood,
+          week: user?.currentWeek,
+          day: user?.currentSuggestion,
+        }
       });
-      return res.json();
+      return res;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", userId, "journal"] });

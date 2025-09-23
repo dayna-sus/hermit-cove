@@ -206,11 +206,11 @@ export default function LandingPage() {
 
               {/* Action Buttons */}
               {!showNameInput && (
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center items-center">
                   <Button
                     onClick={handleBeginJourney}
                     size="lg"
-                    className="px-8 py-4 text-lg font-semibold"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold"
                     data-testid="button-begin-journey"
                   >
                     🌟 Begin Your Journey
@@ -219,7 +219,7 @@ export default function LandingPage() {
                     variant="secondary"
                     onClick={handleContinueJourney}
                     size="lg"
-                    className="px-8 py-4 text-lg font-semibold"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold"
                     data-testid="button-continue-journey"
                   >
                     📍 Continue Your Journey
@@ -229,10 +229,10 @@ export default function LandingPage() {
                     onClick={() => createTestUserMutation.mutate()}
                     disabled={createTestUserMutation.isPending}
                     size="lg"
-                    className="px-8 py-4 text-lg font-semibold border-2 border-dashed"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-dashed"
                     data-testid="button-test-celebration"
                   >
-                    {createTestUserMutation.isPending ? "Creating..." : "🎉 View Celebration Page"}
+                    {createTestUserMutation.isPending ? "Creating..." : "🎉 View Celebration"}
                   </Button>
                 </div>
               )}

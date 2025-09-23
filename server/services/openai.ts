@@ -62,6 +62,56 @@ const fallbackMessages: EncouragementResponse[] = [
     message: "Like the steady rhythm of waves on shore, your consistent effort is creating lasting change. Keep flowing forward! 🌊💙",
     sentiment: 'positive',
     encouragementLevel: 'strong'
+  },
+  {
+    message: "You're navigating these waters with such grace. Even when the sea feels choppy, you keep swimming forward. 🐟⚓",
+    sentiment: 'neutral',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "What a beautiful step you've taken! Like a lighthouse beam cutting through fog, your courage illuminates the path ahead. 🌊✨",
+    sentiment: 'positive',
+    encouragementLevel: 'strong'
+  },
+  {
+    message: "Your willingness to try is like a pearl forming in an oyster - pressure creating something precious. 🐚⭐",
+    sentiment: 'positive',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "Sometimes the most important journeys happen beneath the surface. You're doing the deep work that truly matters. 🌊🐙",
+    sentiment: 'neutral',
+    encouragementLevel: 'gentle'
+  },
+  {
+    message: "Like a seasoned sailor reading the winds, you're learning to understand your own patterns and responses. Brilliant! ⚓🌊",
+    sentiment: 'positive',
+    encouragementLevel: 'strong'
+  },
+  {
+    message: "Your honest reflection is like sunlight dancing on water - bringing clarity and beauty to your experience. 🌊✨",
+    sentiment: 'positive',
+    encouragementLevel: 'gentle'
+  },
+  {
+    message: "Even the mightiest whale started as something small. Your growth might feel gradual, but it's profound. 🐟🌊",
+    sentiment: 'neutral',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "You're collecting experiences like sea glass - each one shaped by the waves into something uniquely beautiful. 🐚💎",
+    sentiment: 'positive',
+    encouragementLevel: 'moderate'
+  },
+  {
+    message: "The way you're facing your fears reminds me of a brave captain steering through a storm. You've got this! ⚓🌊",
+    sentiment: 'positive',
+    encouragementLevel: 'strong'
+  },
+  {
+    message: "Like tides that return twice daily, your courage shows up again and again. That consistency is powerful. 🌊🦀",
+    sentiment: 'positive',
+    encouragementLevel: 'moderate'
   }
 ];
 
@@ -81,7 +131,19 @@ const journalFallbackMessages: string[] = [
   "Your reflections are creating ripples of positive change in your life. Keep writing! 🦀💙",
   "Like a lighthouse guiding ships, your self-awareness lights the way forward. 🌊⭐",
   "Every word you write is a step on the path to understanding yourself better. Well done! 🐚🦀",
-  "Your openness is like the ocean - vast, deep, and full of possibilities. 🌊💙"
+  "Your openness is like the ocean - vast, deep, and full of possibilities. 🌊💙",
+  "What a gift you're giving yourself by taking time to reflect. Your thoughts are like treasures washing up on shore. 🐚⚓",
+  "Your journal entries are becoming a map of your inner landscape. Each word charts new territory. 🌊🗺️",
+  "Like a pearl diver exploring the depths, you're discovering gems within your own experience. 💎🌊",
+  "The courage to write honestly about your feelings is like steering a ship through both calm and stormy seas. 🦀⚓",
+  "Your words flow like a gentle current, carrying insights from the depths to the surface. Beautiful work! 🌊✨",
+  "Every entry adds another layer to your story, like sediment creating beautiful underwater caves. 🐚🌊",
+  "Writing these thoughts takes the bravery of a deep-sea explorer. You're discovering new parts of yourself! 🐙💙",
+  "Your journal is becoming a lighthouse of self-understanding, guiding you through life's waters. ⚓✨",
+  "Like a seasoned sailor reading the weather, you're learning to understand your own emotional patterns. 🌊🦀",
+  "The way you capture your experiences reminds me of an artist painting the constantly changing sea. 🎨🌊",
+  "Your honesty flows like a natural spring feeding into the ocean of self-knowledge. Keep writing! 💙🐚",
+  "Each word you write is like a small wave, and together they're creating powerful tides of change. 🌊⭐"
 ];
 
 function getRandomJournalFallback(): string {
@@ -94,30 +156,54 @@ export async function generateEncouragement(
   suggestionDescription: string
 ): Promise<EncouragementResponse> {
   try {
-    const prompt = `You are a supportive AI therapist helping someone overcome social anxiety. They just completed a social anxiety challenge and shared their reflection.
+    // Vary the prompt style for more diverse responses
+    const promptVariations = [
+      `You are a warm, marine-biologist-turned-therapist helping someone with social anxiety. They just completed a challenge and shared their reflection.
 
 Challenge: "${suggestionDescription}"
 User Reflection: "${reflection}"
 
-Analyze their reflection and provide:
-1. An encouraging response (2-3 sentences, warm and supportive)
-2. Sentiment analysis of their reflection (positive, negative, or neutral)
-3. How much encouragement they need (gentle, moderate, or strong)
+Create a response that:
+1. Celebrates their specific efforts (2-3 sentences)
+2. Uses ocean/marine metaphors naturally 
+3. Acknowledges both struggles and victories
+4. Includes marine emojis (🌊, 🐚, 🦀, ⭐, 🐙, 🌊, 🐟, ⚓)
 
-Use marine-themed emojis (🌊, 🐚, 🦀, ⭐) and maintain a gentle, ocean-inspired tone. 
-Be specific about their progress and validate their feelings, whether positive or challenging.
+Provide sentiment analysis and encouragement level. Respond in JSON: {"message": "", "sentiment": "", "encouragementLevel": ""}`,
 
-Respond in JSON format: {
-  "message": "encouraging response here",
-  "sentiment": "positive/negative/neutral",
-  "encouragementLevel": "gentle/moderate/strong"
-}`;
+      `You are an encouraging lighthouse keeper who guides people through social anxiety recovery. They just shared their experience.
+
+Challenge: "${suggestionDescription}"
+User Reflection: "${reflection}"
+
+Respond like a wise, caring mentor who:
+1. Sees the courage in their action (2-3 sentences)
+2. Connects their experience to ocean imagery
+3. Offers perspective on their growth journey
+4. Uses thoughtful marine emojis (🌊, 🐚, 🦀, ⭐, 🌊)
+
+Include sentiment and encouragement analysis. JSON format: {"message": "", "sentiment": "", "encouragementLevel": ""}`,
+
+      `You are a gentle sea captain helping someone navigate social anxiety waters. They just completed a challenge.
+
+Challenge: "${suggestionDescription}"
+User Reflection: "${reflection}"
+
+Craft an encouraging message that:
+1. Honors their bravery in facing the challenge (2-3 sentences)
+2. Uses varied sea/ocean analogies 
+3. Validates their unique experience and feelings
+4. Includes diverse marine emojis (🌊, 🐚, 🦀, ⭐, 🐙, 🐟, ⚓)
+
+Analyze sentiment and encouragement needs. Return JSON: {"message": "", "sentiment": "", "encouragementLevel": ""}`
+    ];
+
+    const selectedPrompt = promptVariations[Math.floor(Math.random() * promptVariations.length)];
 
     const response = await openai.chat.completions.create({
       model: "gpt-5",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: selectedPrompt }],
       response_format: { type: "json_object" },
-      temperature: 0.7,
       max_tokens: 300,
     });
 
@@ -140,23 +226,47 @@ export async function generateJournalEncouragement(
   mood: string
 ): Promise<string> {
   try {
-    const prompt = `You are a supportive AI companion for someone on a social anxiety recovery journey. They just wrote a journal entry.
+    // Vary journal encouragement prompts for more diversity
+    const journalPromptVariations = [
+      `You are a gentle ocean therapist who helps people process their emotions through journaling. 
 
 Journal Entry: "${journalContent}"
-Mood: ${mood}
+Current Mood: ${mood}
 
-Provide a brief (1-2 sentences), encouraging response that:
-- Acknowledges their feelings and experiences
-- Offers gentle support and validation
-- Uses marine-themed language and emojis (🌊, 🐚, 🦀, ⭐)
-- Matches their emotional state appropriately
+Respond with 1-2 sentences that:
+- Honor their emotional honesty and courage in writing
+- Use flowing ocean metaphors and imagery
+- Include varied marine emojis (🌊, 🐚, 🦀, ⭐, 🐙, 🌸, ⚓)
+- Match their mood with appropriate warmth and support`,
 
-Keep it warm, authentic, and supportive.`;
+      `You are a wise sea turtle who has seen many emotional tides come and go. Someone just shared their journal thoughts.
+
+Journal Content: "${journalContent}"
+Their Mood: ${mood}
+
+Offer 1-2 sentences of encouragement that:
+- Validates their experience with gentle wisdom
+- Uses marine and ocean-based language naturally
+- Includes thoughtful sea emojis (🌊, 🐚, 🦀, ⭐, 🐟, 🌊)
+- Provides comfort appropriate to their emotional state`,
+
+      `You are a caring lighthouse keeper whose light guides people through emotional storms and calm seas alike.
+
+Journal Writing: "${journalContent}"
+Feeling: ${mood}
+
+Provide 1-2 sentences that:
+- Acknowledge their bravery in self-reflection
+- Use lighthouse and ocean metaphors organically  
+- Include diverse marine emojis (🌊, 🐚, 🦀, ⭐, ⚓, 🐙)
+- Offer hope and understanding based on their mood`
+    ];
+
+    const selectedJournalPrompt = journalPromptVariations[Math.floor(Math.random() * journalPromptVariations.length)];
 
     const response = await openai.chat.completions.create({
       model: "gpt-5",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.8,
+      messages: [{ role: "user", content: selectedJournalPrompt }],
       max_tokens: 150,
     });
 

@@ -57,13 +57,16 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     mutationFn: async (reflectionData: { reflection: string }) => {
       if (!suggestion || !userId) throw new Error("Missing data");
       
-      const res = await apiRequest("POST", "/api/reflections", {
-        userId,
-        suggestionId: suggestion.id,
-        reflection: reflectionData.reflection,
-        completed: false,
+      const res = await apiRequest("/api/reflections", {
+        method: "POST",
+        body: {
+          userId,
+          suggestionId: suggestion.id,
+          reflection: reflectionData.reflection,
+          completed: false,
+        }
       });
-      return res.json();
+      return res;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
@@ -78,10 +81,13 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     mutationFn: async () => {
       if (!userId || !suggestion) throw new Error("Missing data");
       
-      const res = await apiRequest("POST", `/api/users/${userId}/complete-suggestion`, {
-        suggestionId: suggestion.id,
+      const res = await apiRequest(`/api/users/${userId}/complete-suggestion`, {
+        method: "POST",
+        body: {
+          suggestionId: suggestion.id,
+        }
       });
-      return res.json();
+      return res;
     },
     onSuccess: async (updatedUser) => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", userId] });

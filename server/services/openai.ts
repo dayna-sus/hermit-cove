@@ -155,6 +155,12 @@ export async function generateEncouragement(
   reflection: string,
   suggestionDescription: string
 ): Promise<EncouragementResponse> {
+  // If no valid API key is available, use fallback messages directly
+  const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
+  if (!apiKey || apiKey === "default_key") {
+    return getRandomFallbackEncouragement();
+  }
+
   try {
     // Vary the prompt style for more diverse responses
     const promptVariations = [
@@ -225,6 +231,12 @@ export async function generateJournalEncouragement(
   journalContent: string,
   mood: string
 ): Promise<string> {
+  // If no valid API key is available, use fallback messages directly
+  const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
+  if (!apiKey || apiKey === "default_key") {
+    return getRandomJournalFallback();
+  }
+
   try {
     // Vary journal encouragement prompts for more diversity
     const journalPromptVariations = [

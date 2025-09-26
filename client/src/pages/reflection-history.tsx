@@ -176,7 +176,7 @@ export default function ReflectionHistoryPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(`/weekly-completion/${completion.week}`)}
+                            onClick={() => navigate(`/week/${completion.week}/complete`)}
                             data-testid={`button-view-week-${completion.week}`}
                           >
                             View Week Details

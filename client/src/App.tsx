@@ -13,6 +13,7 @@ import LandingPage from "@/pages/landing";
 import CourseDashboard from "@/pages/course-dashboard";
 import SuggestionPage from "@/pages/suggestion";
 import WeeklyCompletionPage from "@/pages/weekly-completion";
+import ReflectionHistoryPage from "@/pages/reflection-history";
 import JournalPage from "@/pages/journal";
 import FinalCelebrationPage from "@/pages/final-celebration";
 import AboutCreatorPage from "@/pages/about-creator";
@@ -57,6 +58,9 @@ function AppContent() {
         <Route path="/week/:week/complete">
           {(params) => <WeeklyCompletionPage params={params} />}
         </Route>
+        
+        {/* Reflection history */}
+        <Route path="/reflections" component={ReflectionHistoryPage} />
         
         {/* Journal section */}
         <Route path="/journal" component={JournalPage} />

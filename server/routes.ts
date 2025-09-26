@@ -310,6 +310,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all weekly completions for a user
+  app.get("/api/users/:userId/weekly-completions", async (req, res) => {
+    try {
+      const completions = await storage.getAllWeeklyCompletions(req.params.userId);
+      res.json(completions);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch weekly completions" });
+    }
+  });
+
   // Fix user progress (temporary endpoint for debugging)
   app.post("/api/users/:userId/fix-progress", async (req, res) => {
     try {

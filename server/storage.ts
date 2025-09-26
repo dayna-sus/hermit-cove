@@ -43,6 +43,7 @@ export interface IStorage {
   
   // Weekly completion operations
   getWeeklyCompletion(userId: string, week: number): Promise<WeeklyCompletion | undefined>;
+  getAllWeeklyCompletions(userId: string): Promise<WeeklyCompletion[]>;
   createWeeklyCompletion(completion: InsertWeeklyCompletion): Promise<WeeklyCompletion>;
   
   // Admin operations
@@ -260,6 +261,12 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getAllWeeklyCompletions(userId: string): Promise<WeeklyCompletion[]> {
+    return Array.from(this.weeklyCompletions.values())
+      .filter(c => c.userId === userId)
+      .sort((a, b) => a.week - b.week);
+  }
+
   async createWeeklyCompletion(insertCompletion: InsertWeeklyCompletion): Promise<WeeklyCompletion> {
     const id = randomUUID();
     const completion: WeeklyCompletion = {
@@ -410,6 +417,14 @@ export class DatabaseStorage implements IStorage {
       .from(weeklyCompletions)
       .where(and(eq(weeklyCompletions.userId, userId), eq(weeklyCompletions.week, week)));
     return completion || undefined;
+  }
+
+  async getAllWeeklyCompletions(userId: string): Promise<WeeklyCompletion[]> {
+    return await db
+      .select()
+      .from(weeklyCompletions)
+      .where(eq(weeklyCompletions.userId, userId))
+      .orderBy(weeklyCompletions.week);
   }
 
   async createWeeklyCompletion(insertCompletion: InsertWeeklyCompletion): Promise<WeeklyCompletion> {

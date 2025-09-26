@@ -332,6 +332,16 @@ export default function CourseDashboard() {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
+                      onClick={() => navigate("/reflections")}
+                      data-testid="button-reflection-history"
+                    >
+                      📚 View Reflections
+                    </Button>
+                  )}
+                  {user.completedSuggestions >= 7 && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
                       onClick={() => navigate("/celebrate")}
                       data-testid="button-quick-celebrate"
                     >

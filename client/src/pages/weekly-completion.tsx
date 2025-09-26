@@ -294,6 +294,15 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
                 </Button>
                 <Button
                   variant="outline"
+                  onClick={() => navigate("/reflections")}
+                  size="default"
+                  className="px-4 py-2 text-sm font-medium"
+                  data-testid="button-view-reflections"
+                >
+                  📚 View Reflections
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={() => navigate("/")}
                   size="default"
                   className="px-4 py-2 text-sm font-medium"

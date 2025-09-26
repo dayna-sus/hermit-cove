@@ -76,6 +76,7 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", userId, "weeks", week, "completion"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users", userId, "weekly-completions"] });
       toast({
         title: "Week reflection saved! 🌊",
         description: "Your progress has been celebrated and recorded.",

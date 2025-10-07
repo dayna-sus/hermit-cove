@@ -53,7 +53,7 @@ export default function AboutCreatorPage() {
     <div className="min-h-screen wave-pattern p-4 pb-24">
       <div className="container mx-auto max-w-4xl">
         {/* Navigation */}
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <Button
             variant="outline"
             onClick={() => navigate("/")}
@@ -61,6 +61,14 @@ export default function AboutCreatorPage() {
             data-testid="button-back-home"
           >
             🐚 Back to Home
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/feedback")}
+            className="flex items-center gap-2"
+            data-testid="button-view-feedback"
+          >
+            💬 View All Feedback
           </Button>
         </div>
 

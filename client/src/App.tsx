@@ -17,6 +17,7 @@ import ReflectionHistoryPage from "@/pages/reflection-history";
 import JournalPage from "@/pages/journal";
 import FinalCelebrationPage from "@/pages/final-celebration";
 import AboutCreatorPage from "@/pages/about-creator";
+import FeedbackListPage from "@/pages/feedback-list";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -70,6 +71,9 @@ function AppContent() {
         
         {/* About creator */}
         <Route path="/about-creator" component={AboutCreatorPage} />
+        
+        {/* Feedback list */}
+        <Route path="/feedback" component={FeedbackListPage} />
         
         {/* Admin dashboard */}
         <Route path="/admin" component={AdminDashboard} />

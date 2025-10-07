@@ -2,7 +2,6 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage, createTestUser } from "./storage";
 import { generateEncouragement, generateJournalEncouragement } from "./services/openai";
-import { sendFeedbackEmail } from "./services/email";
 import { 
   insertUserSchema, 
   insertUserReflectionSchema, 
@@ -79,13 +78,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Save feedback to database
       const savedFeedback = await storage.createFeedback(feedbackData);
-
-      // Also send feedback email to the creator (email address is hidden in the service)
-      await sendFeedbackEmail({
-        message: feedbackData.message,
-        timestamp: new Date(),
-        userAgent: feedbackData.userAgent || undefined
-      });
       
       res.json({ success: true, message: "Feedback sent successfully", feedback: savedFeedback });
     } catch (error) {

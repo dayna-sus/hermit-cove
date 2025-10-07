@@ -52,6 +52,13 @@ export const weeklyCompletions = pgTable("weekly_completions", {
   completedAt: timestamp("completed_at").notNull().default(sql`now()`),
 });
 
+export const feedback = pgTable("feedback", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  message: text("message").notNull(),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -80,6 +87,11 @@ export const insertWeeklyCompletionSchema = createInsertSchema(weeklyCompletions
   completedAt: true,
 });
 
+export const insertFeedbackSchema = createInsertSchema(feedback).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -91,6 +103,8 @@ export type JournalEntry = typeof journalEntries.$inferSelect;
 export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
 export type WeeklyCompletion = typeof weeklyCompletions.$inferSelect;
 export type InsertWeeklyCompletion = z.infer<typeof insertWeeklyCompletionSchema>;
+export type Feedback = typeof feedback.$inferSelect;
+export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({

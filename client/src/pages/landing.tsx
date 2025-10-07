@@ -251,13 +251,6 @@ export default function LandingPage() {
                 <p className="text-muted-foreground text-sm">Practical exercises to build confidence</p>
               </CardContent>
             </Card>
-            <Card className="p-6 border border-border shadow-sm">
-              <CardContent className="p-0 text-center">
-                <div className="text-4xl mb-4">🤖</div>
-                <h3 className="font-semibold text-foreground mb-2">AI Support</h3>
-                <p className="text-muted-foreground text-sm">Encouraging responses to your reflections</p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>

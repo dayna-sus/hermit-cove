@@ -21,7 +21,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript running on Node.js
-- **API Design**: RESTful API with JSON responses for user management, suggestions, reflections, and journal entries
+- **API Design**: RESTful API with JSON responses for user management, suggestions, reflections, journal entries, and feedback
 - **Error Handling**: Centralized error middleware with proper HTTP status codes
 - **Development Server**: Vite integration for development with middleware mode and HMR support
 
@@ -34,6 +34,7 @@ Preferred communication style: Simple, everyday language.
   - User reflections table linking users to completed suggestions with AI responses
   - Journal entries table for free-form user journaling with mood tracking
   - Weekly completions table for milestone celebrations
+  - Feedback table for storing user feedback and suggestions submitted via the About the Creator page
 
 ### Authentication & Session Management
 - **Session Storage**: Simple localStorage-based user ID persistence (no complex authentication required)

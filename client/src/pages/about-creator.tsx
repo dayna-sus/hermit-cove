@@ -15,8 +15,11 @@ export default function AboutCreatorPage() {
 
   const submitFeedbackMutation = useMutation({
     mutationFn: async (feedbackText: string) => {
-      const res = await apiRequest("POST", "/api/feedback", { message: feedbackText });
-      return res.json();
+      const res = await apiRequest("/api/feedback", {
+        method: "POST",
+        body: { message: feedbackText }
+      });
+      return res;
     },
     onSuccess: () => {
       setFeedback("");

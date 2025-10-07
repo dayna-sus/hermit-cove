@@ -149,10 +149,6 @@ export default function LandingPage() {
                     <p>Complete one gentle suggestion each day, designed to gradually expand your comfort zone without overwhelming you.</p>
                   </div>
                   <div>
-                    <h4 className="font-medium text-foreground mb-2">🤖 AI-Powered Support</h4>
-                    <p>Receive personalized encouragement and insights after each reflection, helping you process your experiences.</p>
-                  </div>
-                  <div>
                     <h4 className="font-medium text-foreground mb-2">📝 Personal Journal</h4>
                     <p>Track your thoughts, feelings, and progress in a private journal that's always available to you.</p>
                   </div>

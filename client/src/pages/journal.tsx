@@ -67,10 +67,19 @@ export default function JournalPage() {
       setNewEntryContent("");
       setSelectedMood("");
       
-      toast({
-        title: "Journal entry saved! 📖",
-        description: "Your thoughts have been captured.",
-      });
+      // Show AI encouragement if available
+      if (data.aiEncouragement) {
+        toast({
+          title: "Entry saved! 🌊",
+          description: data.aiEncouragement,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Journal entry saved! 📖",
+          description: "Your thoughts have been captured.",
+        });
+      }
     },
   });
 

@@ -84,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await sendFeedbackEmail({
         message: feedbackData.message,
         timestamp: new Date(),
-        userAgent: feedbackData.userAgent
+        userAgent: feedbackData.userAgent || undefined
       });
       
       res.json({ success: true, message: "Feedback sent successfully", feedback: savedFeedback });

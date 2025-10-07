@@ -7,7 +7,8 @@ import {
   insertUserSchema, 
   insertUserReflectionSchema, 
   insertJournalEntrySchema,
-  insertWeeklyCompletionSchema 
+  insertWeeklyCompletionSchema,
+  insertFeedbackSchema
 } from "@shared/schema";
 
 // Admin authentication middleware
@@ -71,20 +72,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit feedback from users
   app.post("/api/feedback", async (req, res) => {
     try {
-      const { message } = req.body;
-      
-      if (!message || typeof message !== 'string' || !message.trim()) {
-        return res.status(400).json({ error: "Message is required" });
-      }
-
-      // Send feedback email to the creator (email address is hidden in the service)
-      await sendFeedbackEmail({
-        message: message.trim(),
-        timestamp: new Date(),
+      const feedbackData = insertFeedbackSchema.parse({
+        message: req.body.message,
         userAgent: req.get('User-Agent')
       });
       
-      res.json({ success: true, message: "Feedback sent successfully" });
+      // Save feedback to database
+      const savedFeedback = await storage.createFeedback(feedbackData);
+
+      // Also send feedback email to the creator (email address is hidden in the service)
+      await sendFeedbackEmail({
+        message: feedbackData.message,
+        timestamp: new Date(),
+        userAgent: feedbackData.userAgent
+      });
+      
+      res.json({ success: true, message: "Feedback sent successfully", feedback: savedFeedback });
     } catch (error) {
       console.error('Error sending feedback:', error);
       res.status(500).json({ error: "Failed to submit feedback" });

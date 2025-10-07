@@ -9,11 +9,14 @@ import {
   type InsertJournalEntry,
   type WeeklyCompletion, 
   type InsertWeeklyCompletion,
+  type Feedback,
+  type InsertFeedback,
   users,
   suggestions,
   userReflections,
   journalEntries,
-  weeklyCompletions
+  weeklyCompletions,
+  feedback
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -46,6 +49,10 @@ export interface IStorage {
   getAllWeeklyCompletions(userId: string): Promise<WeeklyCompletion[]>;
   createWeeklyCompletion(completion: InsertWeeklyCompletion): Promise<WeeklyCompletion>;
   
+  // Feedback operations
+  getAllFeedback(): Promise<Feedback[]>;
+  createFeedback(feedback: InsertFeedback): Promise<Feedback>;
+  
   // Admin operations
   getAdminStats(): Promise<{
     totalUsers: number;
@@ -72,6 +79,7 @@ export class MemStorage implements IStorage {
   private userReflections: Map<string, UserReflection>;
   private journalEntries: Map<string, JournalEntry>;
   private weeklyCompletions: Map<string, WeeklyCompletion>;
+  private feedbacks: Map<string, Feedback>;
 
   constructor() {
     this.users = new Map();
@@ -79,6 +87,7 @@ export class MemStorage implements IStorage {
     this.userReflections = new Map();
     this.journalEntries = new Map();
     this.weeklyCompletions = new Map();
+    this.feedbacks = new Map();
     this.initializeCourseData();
   }
 
@@ -280,6 +289,23 @@ export class MemStorage implements IStorage {
     return completion;
   }
 
+  async getAllFeedback(): Promise<Feedback[]> {
+    return Array.from(this.feedbacks.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createFeedback(insertFeedback: InsertFeedback): Promise<Feedback> {
+    const id = randomUUID();
+    const feedbackItem: Feedback = {
+      id,
+      message: insertFeedback.message,
+      userAgent: insertFeedback.userAgent || null,
+      createdAt: new Date(),
+    };
+    this.feedbacks.set(id, feedbackItem);
+    return feedbackItem;
+  }
+
   // Add admin stats method for MemStorage
   async getAdminStats() {
     const allUsers = Array.from(this.users.values());
@@ -433,6 +459,21 @@ export class DatabaseStorage implements IStorage {
       .values(insertCompletion)
       .returning();
     return completion;
+  }
+
+  async getAllFeedback(): Promise<Feedback[]> {
+    return await db
+      .select()
+      .from(feedback)
+      .orderBy(desc(feedback.createdAt));
+  }
+
+  async createFeedback(insertFeedback: InsertFeedback): Promise<Feedback> {
+    const [feedbackItem] = await db
+      .insert(feedback)
+      .values(insertFeedback)
+      .returning();
+    return feedbackItem;
   }
 
   // Initialize course data in database

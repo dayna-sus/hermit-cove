@@ -335,7 +335,17 @@ export default function CourseDashboard() {
                       onClick={() => navigate("/reflections")}
                       data-testid="button-reflection-history"
                     >
-                      📚 View Reflections
+                      📚 Weekly Reflections
+                    </Button>
+                  )}
+                  {user.completedSuggestions > 0 && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => navigate("/all-reflections")}
+                      data-testid="button-all-reflections"
+                    >
+                      📝 All Daily Reflections
                     </Button>
                   )}
                   {user.completedSuggestions >= 7 && (

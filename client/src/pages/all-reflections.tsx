@@ -13,7 +13,7 @@ interface EnrichedReflection extends UserReflection {
 
 export default function AllReflectionsPage() {
   const [, navigate] = useLocation();
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("hermitCoveUserId");
 
   const { data: reflections, isLoading } = useQuery<EnrichedReflection[]>({
     queryKey: ["/api/users", userId, "reflections"],

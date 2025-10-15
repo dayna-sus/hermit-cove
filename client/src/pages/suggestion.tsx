@@ -247,31 +247,19 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                 </p>
                 
                 {/* Reflection Area */}
-                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-6 border-2 border-primary/20">
-                  <div className="mb-4 bg-white/50 dark:bg-black/20 rounded-lg p-4">
-                    <h3 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
-                      <span className="text-2xl">📝</span>
-                      Write Your Reflection
-                    </h3>
-                    <ol className="text-sm text-muted-foreground space-y-2 ml-6 list-decimal">
-                      <li><strong>First:</strong> Try the activity above in real life</li>
-                      <li><strong>Then:</strong> Come back here and write about your experience</li>
-                      <li><strong>Finally:</strong> Click "Mark Complete & Continue" below to get AI encouragement and move forward</li>
-                    </ol>
-                  </div>
-                  
+                <div className="bg-card rounded-xl p-6 border border-border">
                   <Label 
                     htmlFor="reflection" 
-                    className="block text-sm font-semibold text-foreground mb-2"
+                    className="block text-sm font-medium text-foreground mb-3"
                   >
-                    What happened when you tried this? How did it feel?
+                    How do you feel about this suggestion? 🌊
                   </Label>
                   <Textarea
                     id="reflection"
                     value={reflection}
                     onChange={(e) => setReflection(e.target.value)}
-                    placeholder="Example: I tried making eye contact with the cashier. My heart was racing at first, but then they smiled back and I felt proud of myself..."
-                    className="min-h-32 mb-4 bg-white dark:bg-background"
+                    placeholder="Share your thoughts, concerns, or feelings about this exercise..."
+                    className="min-h-24 mb-4"
                     data-testid="textarea-reflection"
                   />
                   

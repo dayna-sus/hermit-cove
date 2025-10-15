@@ -185,28 +185,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user reflections with suggestion details
+  // Get user reflections
   app.get("/api/users/:userId/reflections", async (req, res) => {
     try {
       const reflections = await storage.getUserReflections(req.params.userId);
-      
-      // Enrich reflections with suggestion details
-      const enrichedReflections = await Promise.all(
-        reflections.map(async (reflection) => {
-          const suggestion = await storage.getSuggestion(reflection.suggestionId);
-          return {
-            ...reflection,
-            suggestion: suggestion || null,
-          };
-        })
-      );
-      
-      // Sort by creation date (newest first)
-      enrichedReflections.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      
-      res.json(enrichedReflections);
+      res.json(reflections);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch reflections" });
     }

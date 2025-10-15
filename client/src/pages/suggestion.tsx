@@ -270,19 +270,16 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                       className="bg-primary/5 rounded-lg p-4 border-l-4 border-primary mb-4"
                       data-testid="ai-response-container"
                     >
-                      <div className="flex items-start gap-3">
-                        <span className="text-xl">🤖</span>
-                        <div>
-                          <p className="text-sm font-medium text-foreground mb-1">
-                            AI Encouragement
-                          </p>
-                          <p 
-                            className="text-sm text-foreground/80"
-                            data-testid="ai-response-text"
-                          >
-                            {existingReflection.aiResponse}
-                          </p>
-                        </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground mb-1">
+                          AI Encouragement
+                        </p>
+                        <p 
+                          className="text-sm text-foreground/80"
+                          data-testid="ai-response-text"
+                        >
+                          {existingReflection.aiResponse}
+                        </p>
                       </div>
                     </div>
                   )}

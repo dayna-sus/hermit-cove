@@ -14,6 +14,7 @@ import CourseDashboard from "@/pages/course-dashboard";
 import SuggestionPage from "@/pages/suggestion";
 import WeeklyCompletionPage from "@/pages/weekly-completion";
 import ReflectionHistoryPage from "@/pages/reflection-history";
+import AllReflectionsPage from "@/pages/all-reflections";
 import JournalPage from "@/pages/journal";
 import FinalCelebrationPage from "@/pages/final-celebration";
 import AboutCreatorPage from "@/pages/about-creator";
@@ -62,6 +63,9 @@ function AppContent() {
         
         {/* Reflection history */}
         <Route path="/reflections" component={ReflectionHistoryPage} />
+        
+        {/* All daily reflections */}
+        <Route path="/all-reflections" component={AllReflectionsPage} />
         
         {/* Journal section */}
         <Route path="/journal" component={JournalPage} />

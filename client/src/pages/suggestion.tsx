@@ -70,6 +70,10 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
+      toast({
+        title: "Reflection saved! 🌊",
+        description: "Your AI encouragement is ready.",
+      });
     },
   });
 
@@ -248,23 +252,18 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                 
                 {/* Reflection Area */}
                 <div className="bg-card rounded-xl p-6 border border-border">
-                  <div className="mb-4">
-                    <Label 
-                      htmlFor="reflection" 
-                      className="block text-lg font-semibold text-foreground mb-2"
-                    >
-                      📝 After completing this activity...
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Come back here and write about your experience. What happened? How did you feel? What did you learn?
-                    </p>
-                  </div>
+                  <Label 
+                    htmlFor="reflection" 
+                    className="block text-sm font-medium text-foreground mb-3"
+                  >
+                    How do you feel about this suggestion? 🌊
+                  </Label>
                   <Textarea
                     id="reflection"
                     value={reflection}
                     onChange={(e) => setReflection(e.target.value)}
-                    placeholder="Example: I tried the breathing exercise and noticed my shoulders were tense. It felt a bit awkward at first, but then I started to relax..."
-                    className="min-h-32 mb-4"
+                    placeholder="Share your thoughts, concerns, or feelings about this exercise..."
+                    className="min-h-24 mb-4"
                     data-testid="textarea-reflection"
                   />
                   

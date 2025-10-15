@@ -70,11 +70,6 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
-      toast({
-        title: "Reflection saved! 🌊",
-        description: "Your AI encouragement is ready.",
-        duration: 10000,
-      });
     },
   });
 

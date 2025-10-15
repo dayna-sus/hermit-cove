@@ -73,6 +73,7 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       toast({
         title: "Reflection saved! 🌊",
         description: "Your AI encouragement is ready.",
+        duration: 10000,
       });
     },
   });

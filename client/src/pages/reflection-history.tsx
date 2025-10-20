@@ -5,9 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-import { COURSE_WEEKS } from "@/lib/course-data";
-import type { User, WeeklyCompletion } from "@shared/schema";
+import type { User, UserReflection, Suggestion } from "@shared/schema";
 import { Calendar, BookOpen, ArrowLeft } from "lucide-react";
+
+interface EnrichedReflection extends UserReflection {
+  suggestion: Suggestion | null;
+}
 
 export default function ReflectionHistoryPage() {
   const [, navigate] = useLocation();
@@ -28,12 +31,12 @@ export default function ReflectionHistoryPage() {
     enabled: !!userId,
   });
 
-  const { data: weeklyCompletions, isLoading: completionsLoading } = useQuery<WeeklyCompletion[]>({
-    queryKey: ["/api/users", userId, "weekly-completions"],
+  const { data: reflections, isLoading: reflectionsLoading } = useQuery<EnrichedReflection[]>({
+    queryKey: ["/api/users", userId, "reflections"],
     enabled: !!userId,
   });
 
-  const isLoading = userLoading || completionsLoading;
+  const isLoading = userLoading || reflectionsLoading;
 
   if (!userId) {
     return null;
@@ -71,9 +74,26 @@ export default function ReflectionHistoryPage() {
     );
   }
 
-  const completedWeeks = weeklyCompletions || [];
-  const totalWeeks = 6;
-  const progress = (completedWeeks.length / totalWeeks) * 100;
+  // Group reflections by week
+  const reflectionsByWeek: { [week: number]: EnrichedReflection[] } = {};
+  (reflections || []).forEach(reflection => {
+    if (reflection.suggestion) {
+      const week = reflection.suggestion.week;
+      if (!reflectionsByWeek[week]) {
+        reflectionsByWeek[week] = [];
+      }
+      reflectionsByWeek[week].push(reflection);
+    }
+  });
+
+  // Sort weeks in descending order
+  const weeks = Object.keys(reflectionsByWeek)
+    .map(Number)
+    .sort((a, b) => b - a);
+
+  const totalReflections = reflections?.length || 0;
+  const totalPossible = user?.completedSuggestions || 0;
+  const progress = totalPossible > 0 ? (totalReflections / totalPossible) * 100 : 0;
 
   return (
     <div className="min-h-screen wave-pattern p-4 pb-24">
@@ -96,16 +116,16 @@ export default function ReflectionHistoryPage() {
               Your Reflection Journey
             </h1>
             <p className="text-muted-foreground mb-6">
-              Revisit your weekly reflections and see how far you've come
+              Revisit your daily reflections and see how far you've come
             </p>
             
             {/* Progress Overview */}
             <Card className="mb-8">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium">Reflection Progress</span>
+                  <span className="text-sm font-medium">Daily Reflections</span>
                   <span className="text-sm text-muted-foreground">
-                    {completedWeeks.length} of {totalWeeks} weeks
+                    {totalReflections} reflections written
                   </span>
                 </div>
                 <Progress value={progress} className="h-2" />
@@ -115,13 +135,13 @@ export default function ReflectionHistoryPage() {
         </div>
 
         {/* Reflections */}
-        {completedWeeks.length === 0 ? (
+        {weeks.length === 0 ? (
           <Card className="text-center p-8">
             <CardContent>
               <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No reflections yet</h3>
               <p className="text-muted-foreground mb-4">
-                Complete your first week to start building your reflection history.
+                Complete your first daily suggestion to start building your reflection history.
               </p>
               <Button onClick={() => navigate("/dashboard")}>
                 Continue Your Journey
@@ -129,89 +149,98 @@ export default function ReflectionHistoryPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-6">
-            {completedWeeks.map((completion) => {
-              const weekData = COURSE_WEEKS.find(w => w.week === completion.week);
+          <div className="space-y-8">
+            {weeks.map((week) => {
+              const weekReflections = reflectionsByWeek[week].sort((a, b) => 
+                (a.suggestion?.day || 0) - (b.suggestion?.day || 0)
+              );
               
               return (
-                <Card key={completion.id} className="overflow-hidden" data-testid={`reflection-week-${completion.week}`}>
-                  <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10">
-                    <CardTitle className="flex items-center gap-3">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      <div>
-                        <h3 className="text-xl font-bold">
-                          Week {completion.week}: {weekData?.title || "Journey Progress"}
-                        </h3>
-                        <p className="text-sm text-muted-foreground font-normal">
-                          Completed on {new Date(completion.completedAt).toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </p>
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    {completion.reflection ? (
-                      <div className="space-y-4">
-                        <div className="bg-muted/30 rounded-lg p-4">
-                          <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                            <span>📝</span> Your Reflection
-                          </h4>
-                          <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                            {completion.reflection}
-                          </p>
-                        </div>
-                        
-                        {weekData?.description && (
-                          <div className="text-sm text-muted-foreground">
-                            <p className="font-medium mb-2">Week Focus:</p>
-                            <p>{weekData.description}</p>
+                <div key={week} className="space-y-4">
+                  <h3 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                    <Calendar className="w-6 h-6 text-primary" />
+                    Week {week}
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {weekReflections.map((reflection) => (
+                      <Card key={reflection.id} className="overflow-hidden" data-testid={`reflection-${reflection.id}`}>
+                        <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 pb-3">
+                          <CardTitle className="flex items-center justify-between">
+                            <div>
+                              <h4 className="text-lg font-bold">
+                                Day {reflection.suggestion?.day}: {reflection.suggestion?.title}
+                              </h4>
+                              <p className="text-sm text-muted-foreground font-normal">
+                                {reflection.suggestion?.category} • {new Date(reflection.createdAt).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })}
+                              </p>
+                            </div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <div className="bg-muted/30 rounded-lg p-4">
+                              <h5 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                                <span>📝</span> Your Reflection
+                              </h5>
+                              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                                {reflection.reflection}
+                              </p>
+                            </div>
+                            
+                            {reflection.aiResponse && (
+                              <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
+                                <h5 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                                  <span>🦀</span> AI Encouragement
+                                </h5>
+                                <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                                  {reflection.aiResponse}
+                                </p>
+                              </div>
+                            )}
+                            
+                            <div className="flex justify-end">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => navigate(`/suggestion/${reflection.suggestion?.week}/${reflection.suggestion?.day}`)}
+                                data-testid={`button-view-day-${reflection.suggestion?.week}-${reflection.suggestion?.day}`}
+                              >
+                                View This Day →
+                              </Button>
+                            </div>
                           </div>
-                        )}
-                        
-                        <div className="flex justify-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigate(`/week/${completion.week}/complete`)}
-                            data-testid={`button-view-week-${completion.week}`}
-                          >
-                            View Week Details
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center text-muted-foreground py-4">
-                        <p>Week completed without a reflection</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
               );
             })}
           </div>
         )}
 
         {/* Call to Action */}
-        {completedWeeks.length > 0 && completedWeeks.length < totalWeeks && (
+        {totalReflections > 0 && user && user.completedSuggestions < 42 && (
           <Card className="mt-8 text-center">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold mb-2">Keep Growing! 🌱</h3>
               <p className="text-muted-foreground mb-4">
-                You're making great progress. Continue your journey to unlock more reflections.
+                You're making great progress. Continue your journey to build more reflections.
               </p>
               <Button onClick={() => navigate("/dashboard")}>
-                Continue to Week {completedWeeks.length + 1}
+                Continue Your Journey
               </Button>
             </CardContent>
           </Card>
         )}
 
         {/* Final message for completed course */}
-        {completedWeeks.length === totalWeeks && (
+        {user && user.completedSuggestions >= 42 && (
           <Card className="mt-8 text-center bg-gradient-to-r from-primary/5 to-secondary/5">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold mb-2">🎉 Journey Complete!</h3>

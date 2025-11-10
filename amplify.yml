@@ -1,4 +1,4 @@
-version: 1
+hermversion: 1
 frontend:
   phases:
     preBuild:

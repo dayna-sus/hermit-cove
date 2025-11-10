@@ -1,0 +1,76 @@
+0
+2025-11-10T19:32:06.354Z [INFO]: # Build environment configured with Standard build compute type: 8GiB Memory, 4vCPUs, 128GB Disk Space
+1
+2025-11-10T19:32:06.787Z [INFO]: # Cloning repository: git@github.com:dayna-sus/hermit-cove.git
+2
+2025-11-10T19:32:07.400Z [INFO]: 
+3
+2025-11-10T19:32:07.400Z [INFO]: Cloning into 'hermit-cove'...
+4
+2025-11-10T19:32:07.401Z [INFO]: # Checking for Git submodules at: /codebuild/output/src1530839860/src/hermit-cove/.gitmodules
+5
+2025-11-10T19:32:07.407Z [INFO]: # Retrieving environment cache...
+6
+2025-11-10T19:32:07.443Z [WARNING]: ! Unable to write cache: {"code":"ERR_BAD_REQUEST","message":"Request failed with status code 404"})}
+7
+2025-11-10T19:32:07.443Z [INFO]: ---- Setting Up SSM Secrets ----
+8
+2025-11-10T19:32:07.443Z [INFO]: SSM params {"Path":"/amplify/d30n4eeyjvwums/main/","WithDecryption":true}
+9
+2025-11-10T19:32:07.486Z [WARNING]: !Failed to set up process.env.secrets
+10
+2025-11-10T19:32:08.189Z [INFO]: # No package override configuration found.
+11
+2025-11-10T19:32:08.192Z [INFO]: # Retrieving cache...
+12
+2025-11-10T19:32:08.221Z [INFO]: # Retrieved cache
+13
+2025-11-10T19:32:11.900Z [INFO]: ## Starting Backend Build
+14
+                                 ## Checking for associated backend environment...
+15
+                                 ## No backend environment association found, continuing...
+16
+                                 ## Completed Backend Build
+17
+2025-11-10T19:32:11.906Z [INFO]: {"backendDuration": 0}
+18
+                                 ## Starting Frontend Build
+19
+                                 # Starting phase: preBuild
+20
+                                 # Executing command: npm ci --cache .npm --prefer-offline
+21
+2025-11-10T19:32:29.502Z [INFO]: added 386 packages, and audited 387 packages in 14s
+22
+2025-11-10T19:32:29.507Z [INFO]: 52 packages are looking for funding
+23
+                                 run `npm fund` for details
+24
+                                 3 low severity vulnerabilities
+25
+                                 To address all issues, run:
+26
+                                 npm audit fix
+27
+                                 Run `npm audit` for details.
+28
+2025-11-10T19:32:29.520Z [INFO]: # Completed phase: preBuild
+29
+                                 # Starting phase: build
+30
+                                 # Executing command: npm run build
+31
+2025-11-10T19:32:29.593Z [INFO]: > rest-express@1.0.0 build
+32
+                                 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+33
+2025-11-10T19:32:29.597Z [WARNING]: sh: line 1: vite: command not found
+34
+2025-11-10T19:32:29.602Z [ERROR]: !!! Build failed
+35
+2025-11-10T19:32:29.602Z [ERROR]: !!! Error: Command failed with exit code 127
+36
+2025-11-10T19:32:29.602Z [INFO]: # Starting environment caching...
+37
+2025-11-10T19:32:29.602Z [INFO]: # Environment caching completed

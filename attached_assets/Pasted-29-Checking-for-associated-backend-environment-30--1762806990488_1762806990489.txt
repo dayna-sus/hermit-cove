@@ -1,0 +1,74 @@
+29
+                                 ## Checking for associated backend environment...
+30
+                                 ## No backend environment association found, continuing...
+31
+                                 ## Completed Backend Build
+32
+2025-11-10T20:27:46.777Z [INFO]: {"backendDuration": 0}
+33
+                                 ## Starting Frontend Build
+34
+                                 # Starting phase: preBuild
+35
+                                 # Executing command: npm ci
+36
+2025-11-10T20:28:07.783Z [INFO]: added 386 packages, and audited 387 packages in 16s
+37
+2025-11-10T20:28:07.788Z [INFO]: 52 packages are looking for funding
+38
+                                 run `npm fund` for details
+39
+                                 3 low severity vulnerabilities
+40
+                                 To address all issues, run:
+41
+                                 npm audit fix
+42
+                                 Run `npm audit` for details.
+43
+2025-11-10T20:28:07.800Z [INFO]: # Completed phase: preBuild
+44
+                                 # Starting phase: build
+45
+                                 # Executing command: npx vite build
+46
+2025-11-10T20:28:13.739Z [WARNING]: npm warn exec The following package was not found and will be installed: vite@7.2.2
+47
+2025-11-10T20:28:17.393Z [WARNING]: failed to load config from /codebuild/output/src3521274183/src/hermit-cove/vite.config.ts
+48
+2025-11-10T20:28:17.397Z [WARNING]: error during build:
+49
+                                    Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /codebuild/output/src3521274183/src/hermit-cove/node_modules/.vite-temp/vite.config.ts.timestamp-1762806497391-3ccc2c36679e4.mjs
+50
+                                    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:255:9)
+51
+                                    at packageResolve (node:internal/modules/esm/resolve:767:81)
+52
+                                    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+53
+                                    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+54
+                                    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:783:12)
+55
+                                    at #cachedDefaultResolve (node:internal/modules/esm/loader:707:25)
+56
+                                    at ModuleLoader.resolve (node:internal/modules/esm/loader:690:38)
+57
+                                    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:307:38)
+58
+                                    at ModuleJob._link (node:internal/modules/esm/module_job:183:49)
+59
+2025-11-10T20:28:17.477Z [ERROR]: !!! Build failed
+60
+2025-11-10T20:28:17.477Z [ERROR]: !!! Error: Command failed with exit code 1
+61
+2025-11-10T20:28:17.477Z [INFO]: # Starting environment caching...
+62
+2025-11-10T20:28:17.478Z [INFO]: # Uploading environment cache artifact...
+63
+2025-11-10T20:28:17.556Z [INFO]: # Uploaded environment cache artifact
+64
+2025-11-10T20:28:17.556Z [INFO]: # Environment caching completed
+65
+66

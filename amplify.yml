@@ -8,10 +8,12 @@ frontend:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: distpublic
+    baseDirectory: dist
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
-clear
+
+  
+  

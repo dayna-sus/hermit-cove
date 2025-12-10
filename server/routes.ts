@@ -284,6 +284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json(entry);
       }
     } catch (error) {
+      console.error('Journal entry creation error:', error);
       res.status(500).json({ error: "Failed to create journal entry" });
     }
   });

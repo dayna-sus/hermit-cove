@@ -36,10 +36,24 @@ export default function JournalPage() {
     setUserId(storedUserId);
   }, [navigate]);
 
-  const { data: user } = useQuery<User>({
+  const { data: user, isError: userError } = useQuery<User>({
     queryKey: ["/api/users", userId],
     enabled: !!userId,
+    retry: false,
   });
+
+  // If user doesn't exist in database, clear localStorage and redirect to start fresh
+  useEffect(() => {
+    if (userError && userId) {
+      localStorage.removeItem("hermitCoveUserId");
+      toast({
+        title: "Session expired",
+        description: "Please start your journey again.",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [userError, userId, navigate, toast]);
 
   const { data: journalEntries, isLoading: entriesLoading } = useQuery<JournalEntry[]>({
     queryKey: ["/api/users", userId, "journal"],
@@ -80,6 +94,16 @@ export default function JournalPage() {
           description: "Your thoughts have been captured.",
         });
       }
+    },
+    onError: () => {
+      // If save fails, the user might not exist - clear and restart
+      localStorage.removeItem("hermitCoveUserId");
+      toast({
+        title: "Unable to save",
+        description: "Please restart your journey.",
+        variant: "destructive",
+      });
+      navigate("/");
     },
   });
 

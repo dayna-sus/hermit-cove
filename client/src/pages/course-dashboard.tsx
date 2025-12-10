@@ -7,11 +7,13 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import CrabProgress from "@/components/crab-progress";
 import { COURSE_WEEKS, getCrabStageFromProgress } from "@/lib/course-data";
+import { useToast } from "@/hooks/use-toast";
 import type { User, Suggestion } from "@shared/schema";
 
 export default function CourseDashboard() {
   const [, navigate] = useLocation();
   const [userId, setUserId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("hermitCoveUserId");
@@ -22,10 +24,24 @@ export default function CourseDashboard() {
     setUserId(storedUserId);
   }, [navigate]);
 
-  const { data: user, isLoading: userLoading } = useQuery<User>({
+  const { data: user, isLoading: userLoading, isError: userError } = useQuery<User>({
     queryKey: ["/api/users", userId],
     enabled: !!userId,
+    retry: false,
   });
+
+  // If user doesn't exist in database, clear localStorage and redirect
+  useEffect(() => {
+    if (userError && userId) {
+      localStorage.removeItem("hermitCoveUserId");
+      toast({
+        title: "Session expired",
+        description: "Please start your journey again.",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [userError, userId, navigate, toast]);
 
   const { data: suggestions, isLoading: suggestionsLoading } = useQuery<Suggestion[]>({
     queryKey: ["/api/suggestions"],

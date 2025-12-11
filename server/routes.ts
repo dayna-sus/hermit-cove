@@ -148,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Submit reflection with AI response
+  // Submit reflection with AI response (AI runs in background for faster response)
   app.post("/api/reflections", async (req, res) => {
     try {
       const reflectionData = insertUserReflectionSchema.parse(req.body);
@@ -160,25 +160,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Suggestion not found" });
       }
 
-      // Generate AI encouragement
-      try {
-        const encouragement = await generateEncouragement(
-          reflectionData.reflection,
-          suggestion.description
-        );
-        
-        // Update the reflection with AI response
-        const updatedReflection = await storage.updateUserReflection(reflection.id, {
-          aiResponse: encouragement.message,
-          sentiment: encouragement.sentiment
+      // Return immediately - AI encouragement runs in background
+      res.json(reflection);
+
+      // Generate AI encouragement in background (don't block response)
+      generateEncouragement(reflectionData.reflection, suggestion.description)
+        .then(async (encouragement) => {
+          await storage.updateUserReflection(reflection.id, {
+            aiResponse: encouragement.message,
+            sentiment: encouragement.sentiment
+          });
+        })
+        .catch((error) => {
+          console.error('Failed to generate encouragement:', error);
         });
-        
-        res.json(updatedReflection);
-      } catch (error) {
-        console.error('Failed to generate encouragement:', error);
-        // Still return the reflection even if AI fails
-        res.json(reflection);
-      }
     } catch (error) {
       console.error('Error creating reflection:', error);
       res.status(500).json({ error: "Failed to create reflection" });

@@ -121,24 +121,19 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
   const weeklyCompletedSuggestions = week * 7;
   const hasCompletedWeek = user.completedSuggestions >= weeklyCompletedSuggestions;
 
+  // If week not complete, silently redirect to dashboard instead of showing error
+  useEffect(() => {
+    if (user && !hasCompletedWeek) {
+      navigate("/dashboard");
+    }
+  }, [user, hasCompletedWeek, navigate]);
+
   if (!hasCompletedWeek) {
+    // Show loading state while redirecting
     return (
-      <div className="min-h-screen wave-pattern p-4 pb-24">
-        <div className="container mx-auto max-w-3xl text-center">
-          <Card className="p-8">
-            <CardContent>
-              <div className="text-6xl mb-4">🔒</div>
-              <h2 className="text-2xl font-bold text-foreground mb-4">
-                Week {week} not yet complete
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Complete all suggestions in Week {week} to unlock this celebration.
-              </p>
-              <Button onClick={() => navigate("/dashboard")}>
-                Return to Dashboard
-              </Button>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen wave-pattern p-4">
+        <div className="container mx-auto max-w-3xl">
+          <Skeleton className="h-96 w-full" />
         </div>
       </div>
     );

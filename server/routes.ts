@@ -265,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Skip suggestion and advance user progress (without counting as completed)
+  // Skip suggestion and advance user progress (skips count toward week/course completion)
   app.post("/api/users/:userId/skip-suggestion", async (req, res) => {
     try {
       const userId = req.params.userId;
@@ -288,6 +288,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json(user);
       }
 
+      // Increment completedSuggestions - skips count toward progress!
+      const completedSuggestions = user.completedSuggestions + 1;
+
       // Calculate what the next suggestion should be based on the suggestion being skipped
       let nextWeek = week;
       let nextDay = day;
@@ -302,6 +305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updatedUser = await storage.updateUser(userId, {
+        completedSuggestions,
         currentWeek: nextWeek,
         currentSuggestion: nextDay
       });

@@ -62,6 +62,17 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
     }
   }, [weeklyCompletion, weeklyReflection]);
 
+  // Check if user has completed this week - redirect if not
+  const weeklyCompletedSuggestions = week * 7;
+  const hasCompletedWeek = user ? user.completedSuggestions >= weeklyCompletedSuggestions : false;
+
+  // If week not complete, silently redirect to dashboard instead of showing error
+  useEffect(() => {
+    if (user && !hasCompletedWeek) {
+      navigate("/dashboard");
+    }
+  }, [user, hasCompletedWeek, navigate]);
+
   const submitWeeklyCompletionMutation = useMutation({
     mutationFn: async (reflectionData: { reflection: string }) => {
       if (!userId) throw new Error("No user ID");
@@ -116,17 +127,6 @@ export default function WeeklyCompletionPage({ params }: WeeklyCompletionPagePro
       </div>
     );
   }
-
-  // Check if user has completed this week
-  const weeklyCompletedSuggestions = week * 7;
-  const hasCompletedWeek = user.completedSuggestions >= weeklyCompletedSuggestions;
-
-  // If week not complete, silently redirect to dashboard instead of showing error
-  useEffect(() => {
-    if (user && !hasCompletedWeek) {
-      navigate("/dashboard");
-    }
-  }, [user, hasCompletedWeek, navigate]);
 
   if (!hasCompletedWeek) {
     // Show loading state while redirecting

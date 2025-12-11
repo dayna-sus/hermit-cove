@@ -207,10 +207,10 @@ Analyze sentiment and encouragement needs. Return JSON: {"message": "", "sentime
     const selectedPrompt = promptVariations[Math.floor(Math.random() * promptVariations.length)];
 
     const response = await openai.chat.completions.create({
-      model: "gpt-5",
+      model: "gpt-4o",
       messages: [{ role: "user", content: selectedPrompt }],
       response_format: { type: "json_object" },
-      max_tokens: 300,
+      max_completion_tokens: 300,
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -277,9 +277,9 @@ Provide 1-2 sentences that:
     const selectedJournalPrompt = journalPromptVariations[Math.floor(Math.random() * journalPromptVariations.length)];
 
     const response = await openai.chat.completions.create({
-      model: "gpt-5",
+      model: "gpt-4o",
       messages: [{ role: "user", content: selectedJournalPrompt }],
-      max_tokens: 150,
+      max_completion_tokens: 150,
     });
 
     return response.choices[0].message.content || "Your journey is unique and valuable. Keep flowing forward like the gentle tide. 🌊💙";

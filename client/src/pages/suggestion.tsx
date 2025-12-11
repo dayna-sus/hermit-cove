@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +23,8 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
   const [, navigate] = useLocation();
   const [reflection, setReflection] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
+  const [showSkipDialog, setShowSkipDialog] = useState(false);
+  const [skipReflection, setSkipReflection] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -105,8 +108,21 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
   });
 
   const skipSuggestionMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (skipReflectionText?: string) => {
       if (!userId || !suggestion) throw new Error("Missing data");
+      
+      // If user provided a reflection about why they're skipping, save it first
+      if (skipReflectionText && skipReflectionText.trim()) {
+        await apiRequest("/api/reflections", {
+          method: "POST",
+          body: {
+            userId,
+            suggestionId: suggestion.id,
+            reflection: skipReflectionText.trim(),
+            completed: false,
+          }
+        });
+      }
       
       const res = await apiRequest(`/api/users/${userId}/skip-suggestion`, {
         method: "POST",
@@ -119,6 +135,10 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["/api/users", userId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
+      
+      setShowSkipDialog(false);
+      setSkipReflection("");
       
       // Navigate to next suggestion or week completion
       if (day >= 7) {
@@ -133,6 +153,20 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       });
     },
   });
+  
+  const handleSkipClick = () => {
+    // If user already has a reflection written in the main textarea, use that
+    if (reflection.trim()) {
+      skipSuggestionMutation.mutate(reflection);
+    } else {
+      // Otherwise show dialog to encourage them to share their feelings
+      setShowSkipDialog(true);
+    }
+  };
+  
+  const handleConfirmSkip = () => {
+    skipSuggestionMutation.mutate(skipReflection);
+  };
 
   // Set reflection from existing data and clear when changing suggestions
   useEffect(() => {
@@ -344,7 +378,7 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                         </Button>
                         <Button
                           variant="secondary"
-                          onClick={() => skipSuggestionMutation.mutate()}
+                          onClick={handleSkipClick}
                           disabled={skipSuggestionMutation.isPending || completeSuggestionMutation.isPending}
                           data-testid="button-skip-suggestion"
                         >
@@ -425,6 +459,48 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
           </Button>
         </div>
       </div>
+      
+      {/* Skip Reflection Dialog */}
+      <Dialog open={showSkipDialog} onOpenChange={setShowSkipDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Before you skip... 💭</DialogTitle>
+            <DialogDescription>
+              It's completely okay to skip this suggestion. Before you go, would you like to share how you're feeling about it? This can help you process your thoughts and track your journey.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <Textarea
+              value={skipReflection}
+              onChange={(e) => setSkipReflection(e.target.value)}
+              placeholder="What's making this feel challenging right now? (optional)"
+              className="min-h-24"
+              data-testid="textarea-skip-reflection"
+            />
+            <p className="text-xs text-muted-foreground">
+              This is optional - you can skip without writing anything. But sharing your feelings can be part of your healing journey.
+            </p>
+          </div>
+          
+          <DialogFooter className="flex gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowSkipDialog(false)}
+              data-testid="button-cancel-skip"
+            >
+              Go Back
+            </Button>
+            <Button
+              onClick={handleConfirmSkip}
+              disabled={skipSuggestionMutation.isPending}
+              data-testid="button-confirm-skip"
+            >
+              {skipSuggestionMutation.isPending ? "Skipping..." : "Skip & Continue"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

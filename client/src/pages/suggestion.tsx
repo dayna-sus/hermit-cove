@@ -57,7 +57,7 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
   });
 
   const submitReflectionMutation = useMutation({
-    mutationFn: async (reflectionData: { reflection: string }) => {
+    mutationFn: async (reflectionData: { reflection: string; skipRefetch?: boolean }) => {
       if (!suggestion || !userId) throw new Error("Missing data");
       
       const res = await apiRequest("/api/reflections", {
@@ -69,10 +69,13 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
           completed: false,
         }
       });
-      return res;
+      return { ...res, skipRefetch: reflectionData.skipRefetch };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
+    onSuccess: (data) => {
+      // Don't refetch if we're about to navigate away (prevents flash of AI response)
+      if (!data?.skipRefetch) {
+        queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
+      }
     },
   });
 
@@ -88,16 +91,19 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       });
       return res;
     },
-    onSuccess: async (updatedUser) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users", userId] });
+    onSuccess: async (updatedUser: User) => {
+      // Update user cache immediately with returned data to prevent race conditions
+      queryClient.setQueryData(["/api/users", userId], updatedUser);
       
-      // Navigate based on what we just completed and the updated user progress
+      // Navigate based on updated user's position (use server state, not local math)
+      const nextWeek = updatedUser.currentWeek;
+      const nextDay = updatedUser.currentSuggestion;
+      
+      // If we just finished day 7, we should go to week completion
       if (day >= 7) {
-        // Just completed last day of week - go to week completion page
         navigate(`/week/${week}/complete`);
       } else {
-        // Go to next day in current week
-        navigate(`/suggestion/${week}/${day + 1}`);
+        navigate(`/suggestion/${nextWeek}/${nextDay}`);
       }
       
       toast({
@@ -133,18 +139,21 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       });
       return res;
     },
-    onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users", userId] });
-      queryClient.invalidateQueries({ queryKey: ["/api/reflections", userId, suggestion?.id] });
+    onSuccess: async (updatedUser: User) => {
+      // Update user cache immediately with returned data to prevent race conditions
+      queryClient.setQueryData(["/api/users", userId], updatedUser);
       
       setShowSkipDialog(false);
       setSkipReflection("");
       
-      // Navigate to next suggestion or week completion
+      // Navigate based on updated user's position (use server state, not local math)
+      const nextWeek = updatedUser.currentWeek;
+      const nextDay = updatedUser.currentSuggestion;
+      
       if (day >= 7) {
         navigate(`/week/${week}/complete`);
       } else {
-        navigate(`/suggestion/${week}/${day + 1}`);
+        navigate(`/suggestion/${nextWeek}/${nextDay}`);
       }
       
       toast({
@@ -251,10 +260,14 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       return;
     }
 
-    // If there's a new reflection that hasn't been submitted, submit it first to get AI encouragement
+    // If there's a new reflection that hasn't been submitted, submit it first
+    // Skip refetch since we're navigating away (prevents flash of AI response)
     if (reflection.trim() && reflection !== existingReflection?.reflection) {
       try {
-        await submitReflectionMutation.mutateAsync({ reflection: reflection.trim() });
+        await submitReflectionMutation.mutateAsync({ 
+          reflection: reflection.trim(),
+          skipRefetch: true 
+        });
       } catch (error) {
         console.error("Failed to submit reflection:", error);
         // Continue with completion even if reflection submission fails

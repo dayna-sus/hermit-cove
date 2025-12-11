@@ -265,6 +265,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Skip suggestion and advance user progress (without counting as completed)
+  app.post("/api/users/:userId/skip-suggestion", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      
+      // Get user
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Calculate what the next suggestion should be (same logic as complete, but don't increment completed count)
+      let nextWeek = user.currentWeek;
+      let nextDay = user.currentSuggestion;
+      
+      // If we're on the last day of the week (day 7), advance to next week
+      if (user.currentSuggestion >= 7) {
+        nextWeek = Math.min(user.currentWeek + 1, 6);
+        nextDay = 1;
+      } else {
+        // Otherwise, just advance to the next day in the current week
+        nextDay = user.currentSuggestion + 1;
+      }
+
+      const updatedUser = await storage.updateUser(userId, {
+        currentWeek: nextWeek,
+        currentSuggestion: nextDay
+      });
+
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to skip suggestion" });
+    }
+  });
+
   // Create journal entry
   app.post("/api/journal", async (req, res) => {
     try {

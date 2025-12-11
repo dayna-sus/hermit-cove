@@ -104,6 +104,35 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
     },
   });
 
+  const skipSuggestionMutation = useMutation({
+    mutationFn: async () => {
+      if (!userId || !suggestion) throw new Error("Missing data");
+      
+      const res = await apiRequest(`/api/users/${userId}/skip-suggestion`, {
+        method: "POST",
+        body: {
+          suggestionId: suggestion.id,
+        }
+      });
+      return res;
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/users", userId] });
+      
+      // Navigate to next suggestion or week completion
+      if (day >= 7) {
+        navigate(`/week/${week}/complete`);
+      } else {
+        navigate(`/suggestion/${week}/${day + 1}`);
+      }
+      
+      toast({
+        title: "Suggestion skipped",
+        description: "That's okay! You can always come back to this one later. Keep going! 🌊",
+      });
+    },
+  });
+
   // Set reflection from existing data and clear when changing suggestions
   useEffect(() => {
     if (existingReflection?.reflection) {
@@ -301,16 +330,29 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                         Continue Journey 🌊
                       </Button>
                     ) : (
-                      <Button
-                        onClick={handleCompleteAndContinue}
-                        disabled={completeSuggestionMutation.isPending}
-                        data-testid="button-complete-suggestion"
-                      >
-                        {completeSuggestionMutation.isPending 
-                          ? "Completing..." 
-                          : "Mark Complete & Continue 🌊"
-                        }
-                      </Button>
+                      <>
+                        <Button
+                          onClick={handleCompleteAndContinue}
+                          disabled={completeSuggestionMutation.isPending || skipSuggestionMutation.isPending}
+                          data-testid="button-complete-suggestion"
+                        >
+                          {completeSuggestionMutation.isPending 
+                            ? "Completing..." 
+                            : "Mark Complete & Continue 🌊"
+                          }
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => skipSuggestionMutation.mutate()}
+                          disabled={skipSuggestionMutation.isPending || completeSuggestionMutation.isPending}
+                          data-testid="button-skip-suggestion"
+                        >
+                          {skipSuggestionMutation.isPending 
+                            ? "Skipping..." 
+                            : "Skip This One"
+                          }
+                        </Button>
+                      </>
                     )}
                     <Button
                       variant="outline"
@@ -320,6 +362,13 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
                       Go back to main page
                     </Button>
                   </div>
+                  
+                  {/* Skip explanation */}
+                  {!existingReflection?.completed && (
+                    <p className="text-xs text-muted-foreground mt-3 text-center">
+                      Feeling overwhelmed? It's okay to skip suggestions that feel too challenging right now. Your progress is personal, not perfect.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

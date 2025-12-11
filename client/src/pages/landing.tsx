@@ -157,9 +157,12 @@ export default function LandingPage() {
                     <p>Watch your crab mascot emerge from its shell as you complete challenges, symbolizing your own growth.</p>
                   </div>
                 </div>
-                <div className="mt-6 p-4 bg-accent/20 rounded-lg">
+                <div className="mt-6 p-4 bg-accent/20 rounded-lg space-y-3">
                   <p className="text-sm text-center text-muted-foreground">
                     <strong>Self-paced and flexible</strong> - Complete suggestions at your own speed, skip days when needed, and return anytime to continue your journey.
+                  </p>
+                  <p className="text-sm text-center text-muted-foreground">
+                    <strong>It's okay to skip</strong> - Some suggestions, especially group activities, may feel too challenging right now. That's completely normal. You can skip any suggestion and still complete the course. Your progress is personal, not perfect.
                   </p>
                 </div>
               </div>

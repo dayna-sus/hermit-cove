@@ -269,6 +269,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/users/:userId/skip-suggestion", async (req, res) => {
     try {
       const userId = req.params.userId;
+      const { week, day } = req.body;
+      
+      // Validate week and day are provided
+      if (!week || !day) {
+        return res.status(400).json({ error: "Week and day are required" });
+      }
       
       // Get user
       const user = await storage.getUser(userId);
@@ -276,17 +282,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "User not found" });
       }
 
-      // Calculate what the next suggestion should be (same logic as complete, but don't increment completed count)
-      let nextWeek = user.currentWeek;
-      let nextDay = user.currentSuggestion;
+      // Only advance if this is the user's current suggestion (prevent skipping already completed suggestions)
+      if (user.currentWeek !== week || user.currentSuggestion !== day) {
+        // User is viewing an old/already passed suggestion, just return current state
+        return res.json(user);
+      }
+
+      // Calculate what the next suggestion should be based on the suggestion being skipped
+      let nextWeek = week;
+      let nextDay = day;
       
       // If we're on the last day of the week (day 7), advance to next week
-      if (user.currentSuggestion >= 7) {
-        nextWeek = Math.min(user.currentWeek + 1, 6);
+      if (day >= 7) {
+        nextWeek = Math.min(week + 1, 6);
         nextDay = 1;
       } else {
         // Otherwise, just advance to the next day in the current week
-        nextDay = user.currentSuggestion + 1;
+        nextDay = day + 1;
       }
 
       const updatedUser = await storage.updateUser(userId, {

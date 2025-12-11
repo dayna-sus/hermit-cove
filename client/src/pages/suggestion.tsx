@@ -111,7 +111,8 @@ export default function SuggestionPage({ params }: SuggestionPageProps) {
       const res = await apiRequest(`/api/users/${userId}/skip-suggestion`, {
         method: "POST",
         body: {
-          suggestionId: suggestion.id,
+          week,
+          day,
         }
       });
       return res;

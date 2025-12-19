@@ -33,19 +33,33 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Debug build output
+      - name: Show build outputs
         run: |
-          echo "Repo root:"
+          echo "=== repo root ==="
           ls -la
-          echo "client/client-dist (if present):"
-          ls -la client/client-dist || true
-          echo "client-dist (if present):"
+          echo "=== client-dist (if present) ==="
           ls -la client-dist || true
+          echo "=== client/client-dist (if present) ==="
+          ls -la client/client-dist || true
+
+      - name: Prepare Pages artifact folder
+        run: |
+          rm -rf pages-dist
+          if [ -d "client/client-dist" ]; then
+            cp -R "client/client-dist" pages-dist
+          elif [ -d "client-dist" ]; then
+            cp -R "client-dist" pages-dist
+          else
+            echo "No build output folder found (expected client-dist or client/client-dist)"
+            exit 2
+          fi
+          echo "=== pages-dist ==="
+          ls -la pages-dist
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: client/client-dist
+          path: pages-dist
 
   deploy:
     runs-on: ubuntu-latest

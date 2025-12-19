@@ -41,7 +41,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: client-dist
+          path: client/client-dist
 
   deploy:
     runs-on: ubuntu-latest

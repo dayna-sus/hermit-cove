@@ -1,10 +1,8 @@
-import { Switch, Route } from "wouter";
+import { useEffect, useState } from "react";
+import { Route, Switch, Redirect } from "wouter";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
+
 import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
 
@@ -21,13 +19,11 @@ import FeedbackListPage from "@/pages/feedback-list";
 import AdminDashboard from "@/pages/admin-dashboard";
 import NotFound from "@/pages/not-found";
 
-// Components
-
 import type { User } from "@shared/schema";
 
 function AppContent() {
   const [userId, setUserId] = useState<string | null>(null);
-  
+
   // Track page views when routes change
   useAnalytics();
 
@@ -36,83 +32,56 @@ function AppContent() {
     setUserId(storedUserId);
   }, []);
 
-  const { data: user } = useQuery<User>({
+  // Keeping your existing user query (safe even if backend isn't running)
+  useQuery<User>({
     queryKey: ["/api/users", userId],
     enabled: !!userId,
   });
 
   return (
-    <div className="min-h-screen" data-testid="app-container">
+<div className="min-h-screen" data-testid="app-container">
       <Switch>
-        {/* Landing page */}
         <Route path="/" component={LandingPage} />
-        
-        {/* Course dashboard */}
         <Route path="/dashboard" component={CourseDashboard} />
-        
-        {/* Individual suggestions */}
+
         <Route path="/suggestion/:week/:day">
           {(params) => <SuggestionPage params={params} />}
         </Route>
-        
-        {/* Weekly completion pages */}
+
         <Route path="/week/:week/complete">
           {(params) => <WeeklyCompletionPage params={params} />}
         </Route>
-        
-        {/* Reflection history */}
+
         <Route path="/reflections" component={ReflectionHistoryPage} />
-        
-        {/* Journal section */}
         <Route path="/journal" component={JournalPage} />
-        
-        {/* Final celebration */}
         <Route path="/final-celebration" component={FinalCelebrationPage} />
-        
-        {/* About creator */}
         <Route path="/about-creator" component={AboutCreatorPage} />
-        
-        {/* Feedback list */}
         <Route path="/feedback" component={FeedbackListPage} />
-        
-        {/* Admin dashboard */}
         <Route path="/admin" component={AdminDashboard} />
-        
-        {/* Legacy celebrate route - redirect to dashboard */}
+
+        {/* Legacy route */}
         <Route path="/celebrate">
-          {() => {
-            window.location.href = "/dashboard";
-            return null;
-          }}
+          <Redirect to="/dashboard" />
         </Route>
-        
-        {/* Fallback to 404 */}
+
         <Route component={NotFound} />
       </Switch>
-      
     </div>
   );
 }
 
-function App() {
-  // Initialize Google Analytics when app loads
+export default function App() {
   useEffect(() => {
-    // Verify required environment variable is present
     if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
-      console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
+      console.warn("Missing Google Analytics key: VITE_GA_MEASUREMENT_ID");
     } else {
       initGA();
     }
   }, []);
-  
+
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <AppContent />
-      </TooltipProvider>
+      <AppContent />
     </QueryClientProvider>
   );
 }
-
-export default App;
